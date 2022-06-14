@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/models/auth.dart';
-import 'package:utangin/pages/home/menu_borrower.dart';
+import '../../models/auth.dart';
+import '../../pages/home/borrower/form_pengajuan.dart';
+import '../../pages/home/borrower/menu_borrower.dart';
 import '../../pages/home/menu_login.dart';
 import '../../pages/auth/authentication.dart';
 import '../../pages/auth/form_daftar.dart';
@@ -22,6 +23,7 @@ import '../../pages/forlater/sukses_tawaran_peminjaman.dart';
 import '../../pages/forlater/tawaran_pinjaman.dart';
 import '../../pages/forlater/tawarkan_pinjaman.dart';
 import '../../pages/auth/form_login.dart';
+import 'models/pengajuan.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +63,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthModel()),
+        ChangeNotifierProvider(create: (context) => PengajuanModel()),
       ],
       child: GestureDetector(
         onTap: () {
@@ -75,17 +78,17 @@ class MyApp extends StatelessWidget {
               color: Color.fromARGB(250, 250, 250, 250),
             ),
           ),
-          initialRoute: MenuBorrower.nameRoute,
-          // home: FutureBuilder<bool>(
-          //   future: getsession(),
-          //   builder: (BuildContext context, snapshot) {
-          //     if (snapshot.data == true) {
-          //       return const MenuLogin();
-          //     } else {
-          //       return const MyHomePage();
-          //     }
-          //   },
-          // ),
+          // initialRoute: MenuBorrower.nameRoute,
+          home: FutureBuilder<bool>(
+            future: getsession(),
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.data == true) {
+                return const MenuLogin();
+              } else {
+                return const MyHomePage();
+              }
+            },
+          ),
           routes: {
             AuthPage.nameRoute: (context) => const AuthPage(),
             MyHomePage.nameRoute: (context) => const MyHomePage(),
@@ -93,6 +96,7 @@ class MyApp extends StatelessWidget {
             FormLogin.nameRoute: (context) => const FormLogin(),
             MenuLogin.nameRoute: (context) => const MenuLogin(),
             MenuBorrower.nameRoute: (context) => const MenuBorrower(),
+            FormPengajuan.nameRoute: (context) => const FormPengajuan(),
             FormPelunasan.nameRoute: (context) => const FormPelunasan(),
             FormPelunasanLender.nameRoute: (context) =>
                 const FormPelunasanLender(),

@@ -128,7 +128,7 @@ class _AuthPageState extends State<AuthPage> {
                   });
                 },
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.black,
                 ),
                 cursorColor: Colors.black,

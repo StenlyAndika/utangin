@@ -11,11 +11,12 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 import '../pages/auth/sukses_daftar.dart';
 import '../pages/home/menu_login.dart';
+import '../pages/landing.dart';
 import '../template/reusablewidgets.dart';
 
 class AuthModel with ChangeNotifier {
-  String _getlogin = "";
-  String get data => _getlogin;
+  Map<dynamic, dynamic> _getlogin = {};
+  Map<dynamic, dynamic> get data => _getlogin;
 
   String _emailterdaftar = "";
   String get emailterdaftar => _emailterdaftar;
@@ -26,10 +27,10 @@ class AuthModel with ChangeNotifier {
   String _verifotp = "";
   String get verifotp => _verifotp;
 
-  var url = "http://apiutangin.hendrikofirman.com";
+  var url = "http://10.0.2.2/Utangin_API";
   var endpoint_cek_email = "No_login/Cek_email";
   var endpoint_send_otp = "No_login/Kirim_otp";
-  var endpoint_cek_ktp = "User/Cek_ktp";
+  var endpoint_cek_ktp = "No_login/Cek_ktp";
   var endpoint_signup = "No_login/Sign_up";
   var endpoint_login = "No_login/Login";
   var endpoint_auth = "No_login/Cek_login";
@@ -38,7 +39,6 @@ class AuthModel with ChangeNotifier {
   checkEmail(String email) async {
     var hasilResponse =
         await http.get(Uri.parse("$url/$endpoint_cek_email?email=$email"));
-
     _emailterdaftar = await json.decode(hasilResponse.body)["status"];
     notifyListeners();
   }
@@ -50,7 +50,6 @@ class AuthModel with ChangeNotifier {
         "email": email,
       },
     );
-
     _verifotp = await json.decode(hasilResponse.body)["otp"];
     notifyListeners();
   }
@@ -58,7 +57,6 @@ class AuthModel with ChangeNotifier {
   checkKtp(String ktp) async {
     var hasilResponse =
         await http.get(Uri.parse("$url/$endpoint_cek_ktp?ktp=$ktp"));
-
     _ktpterdaftar = await json.decode(hasilResponse.body)["status"];
     notifyListeners();
   }
@@ -145,7 +143,7 @@ class AuthModel with ChangeNotifier {
           "Koneksi waktu habis. Pastikan perangkat anda memiliki akses internet.",
           Icons.error);
     } on Exception catch (e) {
-      debugPrint("Error $e");
+      print("Error $e");
       ReusableWidgets.alertNotification(
           context, "Terjadi Kesalahan $e", Icons.error);
     }
@@ -200,18 +198,19 @@ class AuthModel with ChangeNotifier {
       },
     );
 
-    _getlogin = await json.decode(hasilResponse.body)["status"];
-    if (_getlogin == "1") {
+    _getlogin = await json.decode(hasilResponse.body);
+    if (_getlogin["status"] == "1") {
       notifyListeners();
       pd.close();
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('status', true);
+      await prefs.setString('ktp', _getlogin["ktp"]);
       Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
-    } else if (_getlogin == "0") {
+    } else if (_getlogin["status"] == "0") {
       pd.close();
       ReusableWidgets.alertNotification(
           context, "Login gagal. Email tidak terdaftar.", Icons.error);
-    } else if (_getlogin == "3") {
+    } else if (_getlogin["status"] == "3") {
       pd.close();
       ReusableWidgets.alertNotification(
           context, "Login gagal. Email Belum diverifikasi.", Icons.error);
@@ -222,15 +221,27 @@ class AuthModel with ChangeNotifier {
     }
   }
 
-  Future<int> logout() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    Map<String, dynamic> _deviceData = <String, dynamic>{};
-    _deviceData = _readAndroidBuildData(await deviceInfo.androidInfo);
-    var deviceId = _deviceData["androidId"];
-    var hasilResponse = await http.get(
-      Uri.parse("$url/$endpoint_logout/$deviceId"),
-    );
+  logout(context) async {
+    // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    // Map<String, dynamic> _deviceData = <String, dynamic>{};
+    // _deviceData = _readAndroidBuildData(await deviceInfo.androidInfo);
+    // var deviceId = _deviceData["androidId"];
+    // var hasilResponse = await http.get(
+    //   Uri.parse("$url/$endpoint_logout/$deviceId"),
+    // );
+    // print(hasilResponse.body);
+    // print(hasilResponse.statusCode);
+    // if (hasilResponse.statusCode == 200) {
+    //   final prefs = await SharedPreferences.getInstance();
+    //   await prefs.remove('status');
+    //   await prefs.remove('ktp');
+    //   Navigator.of(context).pushReplacementNamed(MyHomePage.nameRoute);
+    // }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('status');
+    await prefs.remove('ktp');
+    Navigator.of(context).pushReplacementNamed(MyHomePage.nameRoute);
     notifyListeners();
-    return hasilResponse.statusCode;
   }
 }

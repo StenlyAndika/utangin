@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/landing.dart';
-
+import '../../pages/home/borrower/menu_borrower.dart';
 import '../../models/auth.dart';
 
 class MenuLogin extends StatefulWidget {
@@ -99,7 +97,10 @@ class _MenuLoginState extends State<MenuLogin> {
                   height: MediaQuery.of(context).size.height * 0.04,
                 ),
                 ElevatedButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    Navigator.of(context)
+                        .pushReplacementNamed(MenuBorrower.nameRoute);
+                  },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
@@ -116,14 +117,7 @@ class _MenuLoginState extends State<MenuLogin> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.remove('status');
-                    auth.logout().then((value) {
-                      if (value == 200) {
-                        Navigator.of(context)
-                            .pushReplacementNamed(MyHomePage.nameRoute);
-                      }
-                    });
+                    auth.logout(context);
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),

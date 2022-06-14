@@ -197,7 +197,7 @@ class _FormDaftarState extends State<FormDaftar> {
               child: TextField(
                 controller: email..text = args.message,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.red,
                 ),
@@ -227,7 +227,7 @@ class _FormDaftarState extends State<FormDaftar> {
                 onChanged: (password) => onPasswordChanged(password),
                 textCapitalization: TextCapitalization.none,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.black,
                 ),
                 cursorColor: Colors.black,
@@ -338,7 +338,7 @@ class _FormDaftarState extends State<FormDaftar> {
                   });
                 },
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.black,
                 ),
                 cursorColor: Colors.black,
@@ -392,7 +392,7 @@ class _FormDaftarState extends State<FormDaftar> {
             ReusableWidgets.inputField(
                 "Nama Lengkap", nama, TextInputType.text),
             const SizedBox(height: 5),
-            InputJekel(),
+            inputJekel(),
             const SizedBox(height: 5),
             Container(
               padding: const EdgeInsets.only(left: 5),
@@ -405,7 +405,7 @@ class _FormDaftarState extends State<FormDaftar> {
                 readOnly: true,
                 controller: tgllahir,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.black,
                 ),
                 decoration: const InputDecoration(
@@ -438,7 +438,7 @@ class _FormDaftarState extends State<FormDaftar> {
             ReusableWidgets.inputField(
                 "Alamat Sesuai KTP", alamat, TextInputType.text),
             const SizedBox(height: 5),
-            ReusableWidgets.inputField("RT/RW", rt, TextInputType.text),
+            ReusableWidgets.inputField("RT/RW", rt, TextInputType.number),
             const SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Provinsi", provinsi, TextInputType.text),
@@ -589,8 +589,7 @@ class _FormDaftarState extends State<FormDaftar> {
     );
   }
 
-  // ignore: non_constant_identifier_names
-  Container InputJekel() {
+  Container inputJekel() {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
@@ -602,7 +601,7 @@ class _FormDaftarState extends State<FormDaftar> {
           child: DropdownButton<String>(
             value: jekel,
             style: const TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               color: Colors.black,
             ),
             onChanged: (String? newValue) {

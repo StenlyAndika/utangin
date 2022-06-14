@@ -76,7 +76,7 @@ class _FormLoginState extends State<FormLogin> {
                 controller: password,
                 textCapitalization: TextCapitalization.none,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.black,
                 ),
                 cursorColor: Colors.black,

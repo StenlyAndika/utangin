@@ -29,7 +29,7 @@ class ReusableWidgets {
       child: TextField(
         controller: ctrl,
         style: const TextStyle(
-          fontSize: 18,
+          fontSize: 16,
           color: Colors.black,
         ),
         cursorColor: Colors.black,

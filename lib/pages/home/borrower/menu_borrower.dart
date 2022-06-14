@@ -2,8 +2,12 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:utangin/template/reusablewidgets.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:utangin/pages/home/borrower/form_pengajuan.dart';
+
+import '../../../models/pengajuan.dart';
+import '../menu_login.dart';
 
 class MenuBorrower extends StatefulWidget {
   const MenuBorrower({Key? key}) : super(key: key);
@@ -18,8 +22,22 @@ class _MenuBorrowerState extends State<MenuBorrower> {
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
+        Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
     }
+  }
+
+  getUserData() async {
+    final session = Provider.of<PengajuanModel>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    session.getUserData(ktp!);
+  }
+
+  @override
+  void initState() {
+    getUserData();
+    super.initState();
   }
 
   @override
@@ -77,12 +95,16 @@ class _MenuBorrowerState extends State<MenuBorrower> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  "Adi Nurhayadi",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold),
+                Consumer<PengajuanModel>(
+                  builder: (context, value, child) => Text(
+                    (value.datauser["nama"] != null)
+                        ? value.datauser["nama"]
+                        : "",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 SizedBox(width: 5),
                 Icon(
@@ -266,7 +288,10 @@ class _MenuBorrowerState extends State<MenuBorrower> {
                         minWidth: 200.0,
                         height: 200.0,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(FormPengajuan.nameRoute);
+                          },
                           child: Icon(
                             Icons.attach_money,
                             size: 30,
@@ -288,7 +313,7 @@ class _MenuBorrowerState extends State<MenuBorrower> {
                     ],
                   ),
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 20),
                 Container(
                   height: 120,
                   width: 80,
@@ -320,7 +345,7 @@ class _MenuBorrowerState extends State<MenuBorrower> {
                     ],
                   ),
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 20),
                 Container(
                   height: 120,
                   width: 80,
