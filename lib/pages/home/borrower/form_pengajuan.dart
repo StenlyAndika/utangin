@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -31,10 +32,13 @@ class _FormPengajuanState extends State<FormPengajuan> {
   late TextEditingController tglpengembalian;
   late TextEditingController terminpembayaran;
   late TextEditingController denda;
-  late List _datarekening;
+
+  List<JsonRekening> _datarekening = [];
 
   late bool _emailvalid;
   late bool _emailfound;
+
+  late String ktptujuan;
 
   void _onItemTapped(int index) {
     switch (index) {
@@ -44,25 +48,24 @@ class _FormPengajuanState extends State<FormPengajuan> {
     }
   }
 
-  Future<String> _getRekening() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? ktp = await prefs.getString("ktp");
-    var hasilResponse = await http.get(
-        Uri.parse("http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktp"));
-    var data = json.decode(hasilResponse.body).cast<Map<String, dynamic>>();
+  Future<List> fetchData() async {
+    var hasilResponse = await http.get(Uri.parse(
+        "http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktptujuan"));
 
-    List<JsonRekening> parentSigninList =
-        data.map<JsonRekening>((json) => JsonRekening.fromJson(json)).toList();
+    List allrekening =
+        (json.decode(hasilResponse.body).cast<Map<String, dynamic>>());
 
-    _datarekening.add("Pilih No Rekening");
-
-    for (int i = 0; i < parentSigninList.length; i++) {
-      setState(() {
-        _datarekening.add(parentSigninList[i].no_rek);
-      });
+    for (int i = 0; i < allrekening.length; i++) {
+      _datarekening.add(
+        JsonRekening(
+          no_rek: allrekening[i]["no_rek"],
+          id_rekening: allrekening[i]["id_rekening"],
+          bank: allrekening[i]["bank"],
+        ),
+      );
     }
-    print(_datarekening);
-    return "";
+    return _datarekening;
+    ;
   }
 
   @override
@@ -71,15 +74,13 @@ class _FormPengajuanState extends State<FormPengajuan> {
     namapemberipinjaman = TextEditingController();
     tglpeminjaman = TextEditingController();
     jumlahpinjam = TextEditingController();
-    norek = "Pilih No Rekening";
+    norek = "";
     kegunaanpinjam = TextEditingController();
     tglpengembalian = TextEditingController();
     terminpembayaran = TextEditingController();
     denda = TextEditingController();
     _emailvalid = false;
     _emailfound = true;
-    _datarekening = [];
-    _getRekening();
     super.initState();
   }
 
@@ -139,10 +140,12 @@ class _FormPengajuanState extends State<FormPengajuan> {
                       setState(() {
                         if (value["nama"] != null) {
                           namapemberipinjaman.text = value["nama"];
+                          ktptujuan = value["ktp"];
                           _emailfound = true;
                         } else {
                           namapemberipinjaman.text = "";
                           _emailfound = false;
+                          ktptujuan = "0";
                         }
                       });
                     });
@@ -281,25 +284,48 @@ class _FormPengajuanState extends State<FormPengajuan> {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: norek,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        norek = newValue!;
-                      });
-                    },
-                    items: _datarekening.map((value) {
-                      return DropdownMenuItem(
-                        value: value.toString(),
-                        child: Text(value),
+                child: DropdownSearch<JsonRekening>(
+                  asyncItems: (text) async {
+                    var hasilResponse = await http.get(Uri.parse(
+                        "http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktptujuan"));
+
+                    if (hasilResponse.statusCode != 200) {
+                      return [];
+                    }
+                    List allidrek = (json
+                        .decode(hasilResponse.body)
+                        .cast<Map<String, dynamic>>());
+
+                    List<JsonRekening> allrek = [];
+
+                    for (int i = 0; i < allidrek.length; i++) {
+                      allrek.add(
+                        JsonRekening(
+                          no_rek: allidrek[i]["no_rek"],
+                          id_rekening: allidrek[i]["id_rekening"],
+                          bank: allidrek[i]["bank"],
+                        ),
                       );
-                    }).toList(),
+                    }
+                    return allrek;
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      border: InputBorder.none,
+                    ),
                   ),
+                  dropdownBuilder: (context, selectedItem) =>
+                      Text(selectedItem?.no_rek ?? ""),
+                  popupProps: PopupProps.menu(
+                    itemBuilder: (context, item, isSelected) => ListTile(
+                      title: Text(item.no_rek + " (" + item.bank + ")"),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      norek = value!.id_rekening;
+                    });
+                  },
                 ),
               ),
             ),
