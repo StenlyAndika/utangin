@@ -10,6 +10,9 @@ class PengajuanModel with ChangeNotifier {
   Map<dynamic, dynamic> _datalender = {};
   Map<dynamic, dynamic> get datalender => _datalender;
 
+  List<dynamic> _datarekening = [];
+  List<dynamic> get datarekening => _datarekening;
+
   var url = "http://10.0.2.2/Utangin_API";
   var endpoint_cek_ktp = "User/Data_user/Read_ktp";
   var endpoint_cari_lender = "User/Data_user/Read_email";

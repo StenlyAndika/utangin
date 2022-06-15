@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:utangin/json/json_rekening.dart';
 import 'package:utangin/pages/home/menu_login.dart';
 import 'package:utangin/template/reusablewidgets.dart';
 
@@ -26,8 +31,10 @@ class _FormPengajuanState extends State<FormPengajuan> {
   late TextEditingController tglpengembalian;
   late TextEditingController terminpembayaran;
   late TextEditingController denda;
+  late List _datarekening;
 
   late bool _emailvalid;
+  late bool _emailfound;
 
   void _onItemTapped(int index) {
     switch (index) {
@@ -37,18 +44,42 @@ class _FormPengajuanState extends State<FormPengajuan> {
     }
   }
 
+  Future<String> _getRekening() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    var hasilResponse = await http.get(
+        Uri.parse("http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktp"));
+    var data = json.decode(hasilResponse.body).cast<Map<String, dynamic>>();
+
+    List<JsonRekening> parentSigninList =
+        data.map<JsonRekening>((json) => JsonRekening.fromJson(json)).toList();
+
+    _datarekening.add("Pilih No Rekening");
+
+    for (int i = 0; i < parentSigninList.length; i++) {
+      setState(() {
+        _datarekening.add(parentSigninList[i].no_rek);
+      });
+    }
+    print(_datarekening);
+    return "";
+  }
+
   @override
   void initState() {
     emailtujuan = TextEditingController();
     namapemberipinjaman = TextEditingController();
     tglpeminjaman = TextEditingController();
     jumlahpinjam = TextEditingController();
-    norek = "Pilih no rekening";
+    norek = "Pilih No Rekening";
     kegunaanpinjam = TextEditingController();
     tglpengembalian = TextEditingController();
     terminpembayaran = TextEditingController();
     denda = TextEditingController();
     _emailvalid = false;
+    _emailfound = true;
+    _datarekening = [];
+    _getRekening();
     super.initState();
   }
 
@@ -101,19 +132,21 @@ class _FormPengajuanState extends State<FormPengajuan> {
               ),
               child: TextField(
                 controller: emailtujuan,
-                onChanged: (emailtujuan) {
-                  setState(() {
-                    _emailvalid = EmailValidator.validate(emailtujuan);
-                    if (_emailvalid == true) {
-                      user.cariLender(emailtujuan).then((value) {
+                onChanged: (emailtujuan) async {
+                  _emailvalid = EmailValidator.validate(emailtujuan);
+                  if (_emailvalid == true) {
+                    user.cariLender(emailtujuan).then((value) {
+                      setState(() {
                         if (value["nama"] != null) {
                           namapemberipinjaman.text = value["nama"];
+                          _emailfound = true;
                         } else {
                           namapemberipinjaman.text = "";
+                          _emailfound = false;
                         }
                       });
-                    }
-                  });
+                    });
+                  }
                 },
                 style: const TextStyle(
                   fontSize: 16,
@@ -132,65 +165,41 @@ class _FormPengajuanState extends State<FormPengajuan> {
                 ),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                children: [
-                  if (emailtujuan.text != "") ...[
+            Visibility(
+              visible: (_emailfound) ? false : true,
+              child: Container(
+                padding: const EdgeInsets.only(left: 10),
+                child: Column(
+                  children: [
                     const SizedBox(height: 5),
                     Row(
                       children: [
-                        Consumer<PengajuanModel>(
-                          builder: (context, value, child) => AnimatedContainer(
-                            duration: const Duration(milliseconds: 500),
-                            width: 15,
-                            height: 15,
-                            decoration: BoxDecoration(
-                                color: (value.datauser["nama"] != null)
-                                    ? Colors.red
-                                    : (_emailvalid == true)
-                                        ? Colors.green
-                                        : Colors.red,
-                                border: (value.datauser["nama"] != null)
-                                    ? Border.all(color: Colors.transparent)
-                                    : Border.all(color: Colors.grey.shade400),
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Center(
-                              child: (value.datauser["nama"] != null)
-                                  ? const Icon(
-                                      Icons.close_rounded,
-                                      color: Colors.white,
-                                      size: 10,
-                                    )
-                                  : (_emailvalid == true)
-                                      ? const Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: 10,
-                                        )
-                                      : const Icon(
-                                          Icons.close_rounded,
-                                          color: Colors.white,
-                                          size: 10,
-                                        ),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 500),
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            border: Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Center(
+                            child: const Icon(
+                              Icons.close_rounded,
+                              color: Colors.white,
+                              size: 10,
                             ),
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Consumer<PengajuanModel>(
-                          builder: (context, value, child) => Text(
-                            (value.datauser["nama"] != null)
-                                ? "Email sudah terdaftar"
-                                : (_emailvalid == true)
-                                    ? "Email siap digunakan"
-                                    : "Email tidak valid",
-                            style: const TextStyle(fontSize: 12),
-                          ),
+                        Text(
+                          "Email tidak terdaftar",
+                          style: const TextStyle(fontSize: 12),
                         ),
                       ],
                     ),
                   ],
-                ],
+                ),
               ),
             ),
             const SizedBox(height: 5),
@@ -264,7 +273,36 @@ class _FormPengajuanState extends State<FormPengajuan> {
             ReusableWidgets.inputField(
                 "Jumlah Pinjaman", jumlahpinjam, TextInputType.number),
             const SizedBox(height: 5),
-            inputnorek(),
+            Container(
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: norek,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        norek = newValue!;
+                      });
+                    },
+                    items: _datarekening.map((value) {
+                      return DropdownMenuItem(
+                        value: value.toString(),
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Kegunaan Pinjaman", kegunaanpinjam, TextInputType.text),
@@ -430,39 +468,6 @@ class _FormPengajuanState extends State<FormPengajuan> {
         ],
         currentIndex: 0,
         onTap: _onItemTapped,
-      ),
-    );
-  }
-
-  Container inputnorek() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: norek,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            ),
-            onChanged: (String? newValue) {
-              setState(() {
-                norek = newValue!;
-              });
-            },
-            items: ["Pilih no rekening", "001", "002"]
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-        ),
       ),
     );
   }
