@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class ReusableWidgets {
   static bool isValidEmail(String email) {

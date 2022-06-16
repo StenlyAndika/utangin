@@ -67,7 +67,7 @@ class PengajuanModel with ChangeNotifier {
         ReusableWidgets.alertNotification(
             context, "Pengajuan pinjaman gagal dikirim", Icons.error);
       }
-    } on TimeoutException catch (a) {
+    } on TimeoutException {
       pd.close();
       ReusableWidgets.alertNotification(
           context,

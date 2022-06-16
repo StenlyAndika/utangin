@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:utangin/pages/home/lender/evaluasi_pinjaman.dart';
+import '../../pages/home/lender/menu_lender.dart';
 import '../../models/auth.dart';
 import '../../pages/home/borrower/form_pengajuan.dart';
 import '../../pages/home/borrower/menu_borrower.dart';
@@ -18,12 +20,12 @@ import '../../pages/forlater/pelunasan_konfirmasi.dart';
 import '../../pages/forlater/peminjaman_terdokumentasi.dart';
 import '../../pages/forlater/revisi_peminjaman.dart';
 import '../../pages/forlater/sukses_pelunasan.dart';
-import 'pages/home/borrower/sukses_pengajuan.dart';
+import '../../pages/home/borrower/sukses_pengajuan.dart';
 import '../../pages/forlater/sukses_tawaran_peminjaman.dart';
 import '../../pages/forlater/tawaran_pinjaman.dart';
 import '../../pages/forlater/tawarkan_pinjaman.dart';
 import '../../pages/auth/form_login.dart';
-import 'models/pengajuan.dart';
+import '../../models/pengajuan.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -96,7 +98,9 @@ class MyApp extends StatelessWidget {
             FormLogin.nameRoute: (context) => const FormLogin(),
             MenuLogin.nameRoute: (context) => const MenuLogin(),
             MenuBorrower.nameRoute: (context) => const MenuBorrower(),
+            MenuLender.nameRoute: (context) => const MenuLender(),
             FormPengajuan.nameRoute: (context) => const FormPengajuan(),
+            EvaluasiPinjaman.nameRoute: (context) => const EvaluasiPinjaman(),
             FormPelunasan.nameRoute: (context) => const FormPelunasan(),
             FormPelunasanLender.nameRoute: (context) =>
                 const FormPelunasanLender(),

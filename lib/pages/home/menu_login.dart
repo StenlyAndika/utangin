@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:utangin/pages/home/lender/menu_lender.dart';
 import '../../pages/home/borrower/menu_borrower.dart';
 import '../../models/auth.dart';
 
@@ -81,7 +82,10 @@ class _MenuLoginState extends State<MenuLogin> {
                   height: MediaQuery.of(context).size.height * 0.08,
                 ),
                 ElevatedButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    Navigator.of(context)
+                        .pushReplacementNamed(MenuLender.nameRoute);
+                  },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
