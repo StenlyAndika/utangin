@@ -18,7 +18,7 @@ import '../../pages/forlater/pelunasan_konfirmasi.dart';
 import '../../pages/forlater/peminjaman_terdokumentasi.dart';
 import '../../pages/forlater/revisi_peminjaman.dart';
 import '../../pages/forlater/sukses_pelunasan.dart';
-import '../../pages/forlater/sukses_pengajuan.dart';
+import 'pages/home/borrower/sukses_pengajuan.dart';
 import '../../pages/forlater/sukses_tawaran_peminjaman.dart';
 import '../../pages/forlater/tawaran_pinjaman.dart';
 import '../../pages/forlater/tawarkan_pinjaman.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utangin/pages/home/borrower/menu_borrower.dart';
 
 class NotifSuksesPengajuan extends StatelessWidget {
   const NotifSuksesPengajuan({Key? key}) : super(key: key);
@@ -100,7 +101,10 @@ class NotifSuksesPengajuan extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(MenuBorrower.nameRoute);
+                      },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(40),
                         shape: RoundedRectangleBorder(

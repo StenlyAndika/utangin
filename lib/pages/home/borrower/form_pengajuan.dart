@@ -25,15 +25,12 @@ class FormPengajuan extends StatefulWidget {
 class _FormPengajuanState extends State<FormPengajuan> {
   late TextEditingController emailtujuan;
   late TextEditingController namapemberipinjaman;
-  late TextEditingController tglpeminjaman;
   late TextEditingController jumlahpinjam;
   late String norek;
   late TextEditingController kegunaanpinjam;
   late TextEditingController tglpengembalian;
   late TextEditingController terminpembayaran;
   late TextEditingController denda;
-
-  List<JsonRekening> _datarekening = [];
 
   late bool _emailvalid;
   late bool _emailfound;
@@ -48,33 +45,13 @@ class _FormPengajuanState extends State<FormPengajuan> {
     }
   }
 
-  Future<List> fetchData() async {
-    var hasilResponse = await http.get(Uri.parse(
-        "http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktptujuan"));
-
-    List allrekening =
-        (json.decode(hasilResponse.body).cast<Map<String, dynamic>>());
-
-    for (int i = 0; i < allrekening.length; i++) {
-      _datarekening.add(
-        JsonRekening(
-          no_rek: allrekening[i]["no_rek"],
-          id_rekening: allrekening[i]["id_rekening"],
-          bank: allrekening[i]["bank"],
-        ),
-      );
-    }
-    return _datarekening;
-    ;
-  }
-
   @override
   void initState() {
     emailtujuan = TextEditingController();
     namapemberipinjaman = TextEditingController();
-    tglpeminjaman = TextEditingController();
     jumlahpinjam = TextEditingController();
     norek = "";
+    ktptujuan = "";
     kegunaanpinjam = TextEditingController();
     tglpengembalian = TextEditingController();
     terminpembayaran = TextEditingController();
@@ -135,13 +112,21 @@ class _FormPengajuanState extends State<FormPengajuan> {
                 controller: emailtujuan,
                 onChanged: (emailtujuan) async {
                   _emailvalid = EmailValidator.validate(emailtujuan);
+                  final prefs = await SharedPreferences.getInstance();
+                  var ktpuser = await prefs.getString('ktp');
                   if (_emailvalid == true) {
                     user.cariLender(emailtujuan).then((value) {
                       setState(() {
                         if (value["nama"] != null) {
-                          namapemberipinjaman.text = value["nama"];
-                          ktptujuan = value["ktp"];
-                          _emailfound = true;
+                          if (ktpuser == value["ktp"]) {
+                            _emailfound = false;
+                            ktptujuan = "";
+                            namapemberipinjaman.text = "";
+                          } else {
+                            namapemberipinjaman.text = value["nama"];
+                            ktptujuan = value["ktp"];
+                            _emailfound = true;
+                          }
                         } else {
                           namapemberipinjaman.text = "";
                           _emailfound = false;
@@ -183,7 +168,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                           height: 15,
                           decoration: BoxDecoration(
                             color: Colors.red,
-                            border: Border.all(color: Colors.grey.shade400),
+                            border: Border.all(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: Center(
@@ -234,45 +219,6 @@ class _FormPengajuanState extends State<FormPengajuan> {
               ),
             ),
             const SizedBox(height: 5),
-            Container(
-              padding: const EdgeInsets.only(left: 5),
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: TextField(
-                readOnly: true,
-                controller: tglpeminjaman,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(5),
-                  border: InputBorder.none,
-                  labelText: "Tanggal Peminjaman",
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
-                ),
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1945),
-                      lastDate: DateTime(2100));
-
-                  if (pickedDate != null) {
-                    String formattedDate =
-                        DateFormat('yyyy-MM-dd').format(pickedDate);
-                    setState(() {
-                      tglpeminjaman.text = formattedDate;
-                    });
-                  }
-                },
-              ),
-            ),
-            const SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Jumlah Pinjaman", jumlahpinjam, TextInputType.number),
             const SizedBox(height: 5),
@@ -286,8 +232,10 @@ class _FormPengajuanState extends State<FormPengajuan> {
                 padding: const EdgeInsets.only(left: 10),
                 child: DropdownSearch<JsonRekening>(
                   asyncItems: (text) async {
+                    final prefs = await SharedPreferences.getInstance();
+                    var ktpuser = await prefs.getString('ktp');
                     var hasilResponse = await http.get(Uri.parse(
-                        "http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktptujuan"));
+                        "http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktpuser"));
 
                     if (hasilResponse.statusCode != 200) {
                       return [];
@@ -311,8 +259,10 @@ class _FormPengajuanState extends State<FormPengajuan> {
                   },
                   dropdownDecoratorProps: DropDownDecoratorProps(
                     dropdownSearchDecoration: InputDecoration(
-                      border: InputBorder.none,
-                    ),
+                        border: InputBorder.none,
+                        labelText: "Kirim ke rekening",
+                        labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 124, 113, 113))),
                   ),
                   dropdownBuilder: (context, selectedItem) =>
                       Text(selectedItem?.no_rek ?? ""),
@@ -401,38 +351,69 @@ class _FormPengajuanState extends State<FormPengajuan> {
               ),
             ),
             const SizedBox(height: 5),
-            Container(
-              padding: const EdgeInsets.only(left: 5),
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
-                borderRadius: BorderRadius.circular(10),
+            Tooltip(
+              richMessage: TextSpan(
+                text: 'I am a rich tooltip. ',
+                style: TextStyle(color: Colors.red),
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: 'I am another span of this rich tooltip',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
-              child: TextField(
-                controller: denda,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+              child: Container(
+                padding: const EdgeInsets.only(left: 5),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 184, 174, 174)),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                cursorColor: Colors.black,
-                autocorrect: false,
-                keyboardType: TextInputType.number,
-                enableSuggestions: false,
-                textAlign: TextAlign.right,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(5),
-                  border: InputBorder.none,
-                  labelText: "Telat tenggat waktu ada denda?",
-                  prefixText: "Ya",
-                  suffixText: "% per hari",
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 110, 108, 108)),
+                child: TextField(
+                  controller: denda,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  cursorColor: Colors.black,
+                  autocorrect: false,
+                  keyboardType: TextInputType.number,
+                  enableSuggestions: false,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(5),
+                    border: InputBorder.none,
+                    labelText: "Telat tenggat waktu ada denda?",
+                    prefixText: "Ya",
+                    suffixText: "% per hari",
+                    labelStyle: const TextStyle(
+                        color: Color.fromARGB(255, 110, 108, 108)),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 5),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                var ktpuser = await prefs.getString('ktp');
+
+                String formatdenda = denda.text;
+                final letter = ',';
+                final newLetter = '.';
+                formatdenda = formatdenda.replaceAll(letter, newLetter);
+
+                user.postPinjaman(
+                    context,
+                    ktpuser,
+                    ktptujuan,
+                    jumlahpinjam.text,
+                    norek,
+                    kegunaanpinjam.text,
+                    tglpengembalian.text,
+                    terminpembayaran.text,
+                    formatdenda);
+              },
               style: ElevatedButton.styleFrom(
                 primary: Colors.red,
                 minimumSize: const Size.fromHeight(50),

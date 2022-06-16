@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
+import 'package:utangin/pages/home/borrower/sukses_pengajuan.dart';
+import 'package:utangin/template/reusablewidgets.dart';
 
 class PengajuanModel with ChangeNotifier {
   Map<dynamic, dynamic> _datauser = {};
@@ -37,25 +41,38 @@ class PengajuanModel with ChangeNotifier {
     }
   }
 
-  postPinjaman() async {
-    var hasilResponse = await http.post(
-      Uri.parse("$url/$endpoint_pengajuan"),
-      body: {
-        "ktp_borrower": "",
-        "ktp_lender": "",
-        "jumlah": "",
-        "id_rekening": "",
-        "kegunaan": "",
-        "tanggal_pengembalian": "",
-        "termin": "",
-        "denda": "",
-      },
-    );
-    if (hasilResponse.statusCode == 200) {
-      print("OK");
-    } else {
-      print("error");
+  postPinjaman(context, ktp_borrower, ktp_lender, jumlah, id_rekening, kegunaan,
+      tanggal_pengembalian, termin, denda) async {
+    ProgressDialog pd = ProgressDialog(context: context);
+    pd.show(max: -1, msg: "Mohon tunggu...");
+    try {
+      var hasilResponse = await http.post(
+        Uri.parse("$url/$endpoint_pengajuan"),
+        body: {
+          "ktp_borrower": ktp_borrower,
+          "ktp_lender": ktp_lender,
+          "jumlah": jumlah,
+          "id_rekening": id_rekening,
+          "kegunaan": kegunaan,
+          "tanggal_pengembalian": tanggal_pengembalian,
+          "termin": termin,
+          "denda": denda,
+        },
+      ).timeout(const Duration(seconds: 10));
+      if (hasilResponse.statusCode == 200) {
+        notifyListeners();
+        Navigator.of(context)
+            .pushReplacementNamed(NotifSuksesPengajuan.nameRoute);
+      } else {
+        ReusableWidgets.alertNotification(
+            context, "Pengajuan pinjaman gagal dikirim", Icons.error);
+      }
+    } on TimeoutException catch (a) {
+      pd.close();
+      ReusableWidgets.alertNotification(
+          context,
+          "Koneksi waktu habis. Pastikan perangkat anda terhubung ke internet.",
+          Icons.error);
     }
-    notifyListeners();
   }
 }

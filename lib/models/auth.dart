@@ -140,7 +140,7 @@ class AuthModel with ChangeNotifier {
     } on TimeoutException {
       ReusableWidgets.alertNotification(
           context,
-          "Koneksi waktu habis. Pastikan perangkat anda memiliki akses internet.",
+          "Koneksi waktu habis. Pastikan perangkat anda terhubung ke internet.",
           Icons.error);
     } on Exception catch (e) {
       print("Error $e");
