@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
-import 'package:utangin/pages/home/borrower/sukses_pengajuan.dart';
-import 'package:utangin/template/reusablewidgets.dart';
+import '../pages/home/borrower/sukses_pengajuan.dart';
+import '../template/reusablewidgets.dart';
 
 class PengajuanModel with ChangeNotifier {
   Map<dynamic, dynamic> _datauser = {};

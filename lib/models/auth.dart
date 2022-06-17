@@ -143,7 +143,6 @@ class AuthModel with ChangeNotifier {
           "Koneksi waktu habis. Pastikan perangkat anda terhubung ke internet.",
           Icons.error);
     } on Exception catch (e) {
-      print("Error $e");
       ReusableWidgets.alertNotification(
           context, "Terjadi Kesalahan $e", Icons.error);
     }

@@ -47,6 +47,36 @@ class ReusableWidgets {
     );
   }
 
+  static inputReadOnlyField(
+      String lbl, TextEditingController ctrl, TextInputType keyb) {
+    return Container(
+      padding: const EdgeInsets.only(left: 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: ctrl,
+        style: const TextStyle(
+          fontSize: 16,
+          color: Color.fromARGB(255, 53, 51, 51),
+        ),
+        readOnly: true,
+        cursorColor: Colors.black,
+        autocorrect: false,
+        keyboardType: keyb,
+        enableSuggestions: false,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(5),
+          border: InputBorder.none,
+          labelText: lbl,
+          labelStyle:
+              const TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
+        ),
+      ),
+    );
+  }
+
   static backAppBar(String judul, BuildContext context) {
     return AppBar(
       centerTitle: true,

@@ -351,44 +351,32 @@ class _FormPengajuanState extends State<FormPengajuan> {
               ),
             ),
             const SizedBox(height: 5),
-            Tooltip(
-              richMessage: TextSpan(
-                text: 'I am a rich tooltip. ',
-                style: TextStyle(color: Colors.red),
-                children: <InlineSpan>[
-                  TextSpan(
-                    text: 'I am another span of this rich tooltip',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
+            Container(
+              padding: const EdgeInsets.only(left: 5),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: const Color.fromARGB(255, 184, 174, 174)),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Container(
-                padding: const EdgeInsets.only(left: 5),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
-                  borderRadius: BorderRadius.circular(10),
+              child: TextField(
+                controller: denda,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
                 ),
-                child: TextField(
-                  controller: denda,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                  cursorColor: Colors.black,
-                  autocorrect: false,
-                  keyboardType: TextInputType.number,
-                  enableSuggestions: false,
-                  textAlign: TextAlign.right,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
-                    border: InputBorder.none,
-                    labelText: "Telat tenggat waktu ada denda?",
-                    prefixText: "Ya",
-                    suffixText: "% per hari",
-                    labelStyle: const TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
-                  ),
+                cursorColor: Colors.black,
+                autocorrect: false,
+                keyboardType: TextInputType.number,
+                enableSuggestions: false,
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(5),
+                  border: InputBorder.none,
+                  labelText: "Telat tenggat waktu ada denda?",
+                  prefixText: "Ya",
+                  suffixText: "% per hari",
+                  labelStyle: const TextStyle(
+                      color: Color.fromARGB(255, 110, 108, 108)),
                 ),
               ),
             ),

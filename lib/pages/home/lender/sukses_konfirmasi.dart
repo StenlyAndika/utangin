@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utangin/pages/home/lender/evaluasi_pinjaman.dart';
 
 class NotifPeminjamanTerdokumentasi extends StatelessWidget {
   const NotifPeminjamanTerdokumentasi({Key? key}) : super(key: key);
@@ -15,7 +16,8 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context)
+              .pushReplacementNamed(EvaluasiPinjaman.nameRoute),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -23,7 +25,7 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            "img/bgcity.jpg",
+            "img/secondary-background.jpg",
             fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,
@@ -36,6 +38,28 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "U",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        " T A N G I N . C O M",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
@@ -76,42 +100,36 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "U",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold),
+                  ElevatedButton(
+                    onPressed: () async {},
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 112, 110, 110),
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      Text(
-                        " T A N G I N . C O M",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                    ),
+                    child: const Text(
+                      "Download Kontrak Peminjaman",
+                      style: TextStyle(fontSize: 15),
+                    ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      Navigator.of(context)
+                          .pushReplacementNamed(EvaluasiPinjaman.nameRoute);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Text(
-                        "Kembali Ke Beranda",
-                        style: TextStyle(fontSize: 15),
-                      ),
+                    ),
+                    child: const Text(
+                      "Kembali Ke Beranda",
+                      style: TextStyle(fontSize: 15),
                     ),
                   ),
                   const SizedBox(

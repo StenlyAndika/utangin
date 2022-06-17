@@ -4,28 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/home/lender/evaluasi_pinjaman.dart';
-import '../../pages/home/lender/menu_lender.dart';
-import '../../models/auth.dart';
-import '../../pages/home/borrower/form_pengajuan.dart';
-import '../../pages/home/borrower/menu_borrower.dart';
-import '../../pages/home/menu_login.dart';
-import '../../pages/auth/authentication.dart';
-import '../../pages/auth/form_daftar.dart';
-import '../../pages/auth/sukses_daftar.dart';
-import '../../pages/landing.dart';
-import '../../pages/forlater/ajukan_pinjaman.dart';
-import '../../pages/forlater/pelunasan.dart';
-import '../../pages/forlater/pelunasan_konfirmasi.dart';
-import '../../pages/forlater/peminjaman_terdokumentasi.dart';
-import '../../pages/forlater/revisi_peminjaman.dart';
-import '../../pages/forlater/sukses_pelunasan.dart';
-import '../../pages/home/borrower/sukses_pengajuan.dart';
-import '../../pages/forlater/sukses_tawaran_peminjaman.dart';
-import '../../pages/forlater/tawaran_pinjaman.dart';
-import '../../pages/forlater/tawarkan_pinjaman.dart';
-import '../../pages/auth/form_login.dart';
-import '../../models/pengajuan.dart';
+import 'package:utangin/pages/home/lender/form_revisi.dart';
+import 'package:utangin/pages/home/lender/sukses_revisi.dart';
+import '../pages/home/lender/detail_permohonan.dart';
+import '../pages/home/lender/sukses_konfirmasi.dart';
+import '../pages/home/lender/upload__bukti_peminjaman.dart';
+import '../models/evaluasi_pinjaman_model.dart';
+import '../pages/home/lender/evaluasi_pinjaman.dart';
+import '../pages/home/lender/menu_lender.dart';
+import '../models/auth.dart';
+import '../pages/home/borrower/form_pengajuan.dart';
+import '../pages/home/borrower/menu_borrower.dart';
+import '../pages/home/menu_login.dart';
+import '../pages/auth/authentication.dart';
+import '../pages/auth/form_daftar.dart';
+import '../pages/auth/sukses_daftar.dart';
+import '../pages/landing.dart';
+import '../pages/home/borrower/sukses_pengajuan.dart';
+import '../pages/auth/form_login.dart';
+import '../models/pengajuan.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,6 +63,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthModel()),
         ChangeNotifierProvider(create: (context) => PengajuanModel()),
+        ChangeNotifierProvider(create: (context) => EvaluasiPinjamanModel()),
       ],
       child: GestureDetector(
         onTap: () {
@@ -80,7 +78,6 @@ class MyApp extends StatelessWidget {
               color: Color.fromARGB(250, 250, 250, 250),
             ),
           ),
-          // initialRoute: MenuBorrower.nameRoute,
           home: FutureBuilder<bool>(
             future: getsession(),
             builder: (BuildContext context, snapshot) {
@@ -92,33 +89,34 @@ class MyApp extends StatelessWidget {
             },
           ),
           routes: {
-            AuthPage.nameRoute: (context) => const AuthPage(),
+            // Landing
             MyHomePage.nameRoute: (context) => const MyHomePage(),
+
+            // auth>daftar>login
+            AuthPage.nameRoute: (context) => const AuthPage(),
             FormDaftar.nameRoute: (context) => const FormDaftar(),
             FormLogin.nameRoute: (context) => const FormLogin(),
-            MenuLogin.nameRoute: (context) => const MenuLogin(),
-            MenuBorrower.nameRoute: (context) => const MenuBorrower(),
-            MenuLender.nameRoute: (context) => const MenuLender(),
-            FormPengajuan.nameRoute: (context) => const FormPengajuan(),
-            EvaluasiPinjaman.nameRoute: (context) => const EvaluasiPinjaman(),
-            FormPelunasan.nameRoute: (context) => const FormPelunasan(),
-            FormPelunasanLender.nameRoute: (context) =>
-                const FormPelunasanLender(),
-            PengajuanPinjaman.nameRoute: (context) => const PengajuanPinjaman(),
-            TawarkanPinjaman.nameRoute: (context) => const TawarkanPinjaman(),
-            TawaranPeminjamanLender.nameRoute: (context) =>
-                const TawaranPeminjamanLender(),
             NotifSuksesDaftar.nameRoute: (context) => const NotifSuksesDaftar(),
+
+            // menu login
+            MenuLogin.nameRoute: (context) => const MenuLogin(),
+
+            // fitur borrower
+            MenuBorrower.nameRoute: (context) => const MenuBorrower(),
+            FormPengajuan.nameRoute: (context) => const FormPengajuan(),
             NotifSuksesPengajuan.nameRoute: (context) =>
                 const NotifSuksesPengajuan(),
-            NotifSuksesPelunasan.nameRoute: (context) =>
-                const NotifSuksesPelunasan(),
-            NotifTawaranPeminjaman.nameRoute: (context) =>
-                const NotifTawaranPeminjaman(),
-            NotifRevisiPeminjaman.nameRoute: (context) =>
-                const NotifRevisiPeminjaman(),
+
+            // fitur lender
+            MenuLender.nameRoute: (context) => const MenuLender(),
+            EvaluasiPinjaman.nameRoute: (context) => const EvaluasiPinjaman(),
+            DetailPermohonan.nameRoute: (context) => const DetailPermohonan(),
+            UploadBuktiPeminjaman.nameRoute: (context) =>
+                const UploadBuktiPeminjaman(),
             NotifPeminjamanTerdokumentasi.nameRoute: (context) =>
                 const NotifPeminjamanTerdokumentasi(),
+            RevisiPinjaman.nameRoute: (context) => const RevisiPinjaman(),
+            NotifSuksesRevisi.nameRoute: (context) => const NotifSuksesRevisi(),
           },
           onGenerateRoute: (settings) {
             if (settings.name == PassArgumentsScreen.routeName) {
