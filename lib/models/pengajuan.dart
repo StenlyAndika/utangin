@@ -59,11 +59,14 @@ class PengajuanModel with ChangeNotifier {
           "denda": denda,
         },
       ).timeout(const Duration(seconds: 10));
+      
       if (hasilResponse.statusCode == 200) {
+        pd.close();
         notifyListeners();
         Navigator.of(context)
             .pushReplacementNamed(NotifSuksesPengajuan.nameRoute);
       } else {
+        pd.close();
         ReusableWidgets.alertNotification(
             context, "Pengajuan pinjaman gagal dikirim", Icons.error);
       }

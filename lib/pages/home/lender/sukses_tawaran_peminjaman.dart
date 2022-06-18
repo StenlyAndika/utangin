@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class NotifRevisiPeminjaman extends StatelessWidget {
-  const NotifRevisiPeminjaman({Key? key}) : super(key: key);
+class NotifTawaranPeminjaman extends StatelessWidget {
+  const NotifTawaranPeminjaman({Key? key}) : super(key: key);
 
-  static const nameRoute = '/page30';
+  static const nameRoute = '/page20';
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class NotifRevisiPeminjaman extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            "img/bgcity.jpg",
+            "img/secondary-background.jpg",
             fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,
@@ -54,7 +54,7 @@ class NotifRevisiPeminjaman extends StatelessWidget {
                     ],
                   ),
                   const Text(
-                    "Revisimu telah kami kirimkan",
+                    "tawaran peminjamanmu telah kami kirimkan",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
@@ -66,7 +66,7 @@ class NotifRevisiPeminjaman extends StatelessWidget {
                     height: 30,
                   ),
                   const Text(
-                    "Cek riwayat peminjamanmu untuk mengetahui kondisi terbaru atas peminjamanmu.",
+                    "Peminjam (borrower) akan mengecek tawaran peminjamanmu & mengkonfirmasikannya melalui tindakan ajukan pinjaman. Tawaran ajukan pinjaman akan dikirim ke kamu untuk kamu evaluasi dan konfirmasi.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
@@ -101,7 +101,9 @@ class NotifRevisiPeminjaman extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(40),
                         shape: RoundedRectangleBorder(

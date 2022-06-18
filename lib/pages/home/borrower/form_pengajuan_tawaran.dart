@@ -1,35 +1,42 @@
+import 'dart:convert';
+
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../template/reusablewidgets.dart';
-import '../../../models/evaluasi_pinjaman_model.dart';
-import '../menu_login.dart';
+import 'package:utangin/json/json_rekening.dart';
+import 'package:utangin/pages/home/menu_login.dart';
+import 'package:utangin/template/reusablewidgets.dart';
+
+import '../../../models/evaluasi_tawaran_model.dart';
+import '../../../models/pengajuan.dart';
 import '../user/pengaturan.dart';
-import 'menu_lender.dart';
+import 'menu_borrower.dart';
 
-class RevisiPinjaman extends StatefulWidget {
-  const RevisiPinjaman({Key? key}) : super(key: key);
+class FormPengajuanTawaran extends StatefulWidget {
+  const FormPengajuanTawaran({Key? key}) : super(key: key);
 
-  static const nameRoute = '/pageRevisiPinjaman';
+  static const nameRoute = '/pageformpengajuanTawaran';
 
   @override
-  State<RevisiPinjaman> createState() => _RevisiPinjamanState();
+  State<FormPengajuanTawaran> createState() => _FormPengajuanTawaranState();
 }
 
-class _RevisiPinjamanState extends State<RevisiPinjaman> {
-  late TextEditingController emailpeminjam;
-  late TextEditingController namapeminjam;
-  late TextEditingController jumlah;
-  late TextEditingController norek;
-  late TextEditingController notrans;
-  late TextEditingController kegunaan;
+class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
+  late TextEditingController emailtujuan;
+  late TextEditingController namapemberipinjaman;
+  late TextEditingController jumlahpinjam;
+  late String norek;
+  late TextEditingController kegunaanpinjam;
   late TextEditingController tglpengembalian;
-  late TextEditingController termin;
+  late TextEditingController terminpembayaran;
   late TextEditingController denda;
-  late TextEditingController ket_revisi;
 
   late String ktptujuan;
+  String? tglp;
+  String? id_penawaran;
 
   void _onItemTapped(int index) {
     switch (index) {
@@ -37,7 +44,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
         break;
       case 3:
         Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
@@ -45,35 +52,42 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
     }
   }
 
-  getDetailPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
+  getDetailTawaran() async {
+    final config = Provider.of<EvaluasiTawaranModel>(context, listen: false);
+    final user = Provider.of<PengajuanModel>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
-    String? idp = await prefs.getString("idp");
-    await session.getDetailPinjaman(idp!);
+    id_penawaran = await prefs.getString("idp");
+    tglp = await prefs.getString('tgl');
+
+    tglpengembalian.text = tglp.toString();
+    user.cariLender(emailtujuan.text).then((value) {
+      ktptujuan = value["ktp"];
+    });
+    await config.getDetailTawaran(id_penawaran!);
   }
 
   @override
   void initState() {
-    getDetailPinjaman();
-    emailpeminjam = TextEditingController();
-    namapeminjam = TextEditingController();
-    jumlah = TextEditingController();
-    norek = TextEditingController();
-    notrans = TextEditingController();
-    kegunaan = TextEditingController();
+    getDetailTawaran();
+    emailtujuan = TextEditingController();
+    namapemberipinjaman = TextEditingController();
+    jumlahpinjam = TextEditingController();
+    norek = "";
+    ktptujuan = "";
+    kegunaanpinjam = TextEditingController();
     tglpengembalian = TextEditingController();
-    termin = TextEditingController();
+    terminpembayaran = TextEditingController();
     denda = TextEditingController();
-    ket_revisi = TextEditingController();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
+    final user = Provider.of<PengajuanModel>(context, listen: false);
+    final config = Provider.of<EvaluasiTawaranModel>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: Consumer<EvaluasiPinjamanModel>(
+      body: Consumer<EvaluasiTawaranModel>(
         builder: (context, value, child) => Container(
           padding:
               const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
@@ -101,7 +115,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                 ],
               ),
               const Text(
-                "Revisi Peminjaman",
+                "Ajukan Pinjaman",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.black,
@@ -109,23 +123,34 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                     fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              ReusableWidgets.inputReadOnlyField(
-                  "Email Peminjam*",
-                  emailpeminjam..text = value.detailpinjaman["email"],
-                  TextInputType.emailAddress),
-              const SizedBox(height: 5),
-              ReusableWidgets.inputReadOnlyField(
-                  "Nama Lengkap*",
-                  namapeminjam..text = value.detailpinjaman["nama"],
-                  TextInputType.text),
-              const SizedBox(height: 5),
-              ReusableWidgets.inputReadOnlyField(
-                  "Tanggal Pengajuan Pinjaman*",
-                  namapeminjam
-                    ..text = DateFormat('d-MM-yyyy').format(
-                      DateTime.parse(value.detailpinjaman["tanggal_pengajuan"]),
-                    ),
-                  TextInputType.text),
+              Container(
+                padding: const EdgeInsets.only(left: 5),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 184, 174, 174)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  controller: emailtujuan
+                    ..text = value.detailtawaran["email_lender"],
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 112, 108, 108),
+                  ),
+                  readOnly: true,
+                  cursorColor: Colors.black,
+                  autocorrect: false,
+                  keyboardType: TextInputType.emailAddress,
+                  enableSuggestions: false,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(5),
+                    border: InputBorder.none,
+                    labelText: "Email Pemberi Pinjaman*",
+                    labelStyle: const TextStyle(
+                        color: Color.fromARGB(255, 110, 108, 108)),
+                  ),
+                ),
+              ),
               const SizedBox(height: 5),
               Container(
                 padding: const EdgeInsets.only(left: 5),
@@ -135,11 +160,42 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
-                  controller: jumlah..text = value.detailpinjaman["jumlah"],
+                  controller: namapemberipinjaman
+                    ..text = value.detailtawaran["nama_lender"],
                   style: const TextStyle(
                     fontSize: 16,
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 112, 108, 108),
                   ),
+                  cursorColor: Colors.black,
+                  autocorrect: false,
+                  keyboardType: TextInputType.number,
+                  enableSuggestions: false,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(5),
+                    border: InputBorder.none,
+                    labelText: "Nama Pemberi Pinjaman*",
+                    labelStyle: const TextStyle(
+                        color: Color.fromARGB(255, 110, 108, 108)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                padding: const EdgeInsets.only(left: 5),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 184, 174, 174)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  controller: jumlahpinjam
+                    ..text = value.detailtawaran["jumlah_tawaran"],
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 112, 108, 108),
+                  ),
+                  readOnly: true,
                   cursorColor: Colors.black,
                   autocorrect: false,
                   keyboardType: TextInputType.number,
@@ -147,7 +203,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(5),
                     border: InputBorder.none,
-                    labelText: "Jumlah Pinjaman",
+                    labelText: "Jumlah Pinjaman*",
                     prefixText: "Rp.",
                     labelStyle: const TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
@@ -155,19 +211,66 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                 ),
               ),
               const SizedBox(height: 5),
-              ReusableWidgets.inputReadOnlyField(
-                  "Kirim ke rekening*",
-                  norek
-                    ..text = value.detailpinjaman["no_rek"] +
-                        " (" +
-                        value.detailpinjaman["bank"] +
-                        ")",
-                  TextInputType.emailAddress),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 184, 174, 174)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: DropdownSearch<JsonRekening>(
+                    asyncItems: (text) async {
+                      final prefs = await SharedPreferences.getInstance();
+                      var ktpuser = await prefs.getString('ktp');
+                      var hasilResponse = await http.get(Uri.parse(
+                          "http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktpuser"));
+
+                      if (hasilResponse.statusCode != 200) {
+                        return [];
+                      }
+                      List allidrek = (json
+                          .decode(hasilResponse.body)
+                          .cast<Map<String, dynamic>>());
+
+                      List<JsonRekening> allrek = [];
+
+                      for (int i = 0; i < allidrek.length; i++) {
+                        allrek.add(
+                          JsonRekening(
+                            no_rek: allidrek[i]["no_rek"],
+                            id_rekening: allidrek[i]["id_rekening"],
+                            bank: allidrek[i]["bank"],
+                          ),
+                        );
+                      }
+                      return allrek;
+                    },
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText: "Kirim ke rekening",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 124, 113, 113))),
+                    ),
+                    dropdownBuilder: (context, selectedItem) =>
+                        Text(selectedItem?.no_rek ?? ""),
+                    popupProps: PopupProps.menu(
+                      itemBuilder: (context, item, isSelected) => ListTile(
+                        title: Text(item.no_rek + " (" + item.bank + ")"),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        norek = value!.id_rekening;
+                      });
+                    },
+                  ),
+                ),
+              ),
               const SizedBox(height: 5),
-              ReusableWidgets.inputReadOnlyField(
-                  "Kegunaan peminjaman*",
-                  kegunaan..text = value.detailpinjaman["kegunaan"],
-                  TextInputType.emailAddress),
+              ReusableWidgets.inputField(
+                  "Kegunaan Pinjaman", kegunaanpinjam, TextInputType.text),
               const SizedBox(height: 5),
               Container(
                 padding: const EdgeInsets.only(left: 5),
@@ -178,11 +281,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                 ),
                 child: TextField(
                   readOnly: true,
-                  controller: tglpengembalian
-                    ..text = DateFormat('d-MM-yyyy').format(
-                      DateTime.parse(
-                          value.detailpinjaman["tanggal_pengembalian"]),
-                    ),
+                  controller: tglpengembalian,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -220,7 +319,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
-                  controller: termin..text = value.detailpinjaman["termin"],
+                  controller: terminpembayaran,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -249,7 +348,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
-                  controller: denda..text = value.detailpinjaman["denda"],
+                  controller: denda..text = value.detailtawaran["denda"],
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -263,60 +362,38 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                     contentPadding: const EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Telat tenggat waktu ada denda?",
-                    prefixText:
-                        (value.detailpinjaman["denda"].toString() != "0")
-                            ? "Ya"
-                            : "Tidak Ada",
-                    suffixText:
-                        (value.detailpinjaman["denda"].toString() != "0")
-                            ? "% per hari"
-                            : "",
+                    prefixText: "Ya",
+                    suffixText: "% per hari",
                     labelStyle: const TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
               const SizedBox(height: 5),
-              Container(
-                padding: const EdgeInsets.only(left: 5),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  controller: ket_revisi,
-                  maxLines: 6,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                  cursorColor: Colors.black,
-                  autocorrect: false,
-                  keyboardType: TextInputType.multiline,
-                  enableSuggestions: false,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
-                    border: InputBorder.none,
-                    labelText: "Tulis revisimu...",
-                  ),
-                ),
-              ),
+              Text("* Tidak bisa diedit"),
               const SizedBox(height: 5),
               ElevatedButton(
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
-                  String? id_permohonan = await prefs.getString('idp');
-                  config.revisiPinjaman(
+                  var ktpuser = await prefs.getString('ktp');
+
+                  String formatdenda = denda.text;
+                  final letter = ',';
+                  final newLetter = '.';
+                  formatdenda = formatdenda.replaceAll(letter, newLetter);
+
+                  await config.accTawaran(id_penawaran!);
+
+                  await user.postPinjaman(
                       context,
-                      id_permohonan,
-                      ket_revisi.text,
-                      jumlah.text,
-                      value.detailpinjaman["id_rekening"],
-                      kegunaan.text,
+                      ktpuser,
+                      ktptujuan,
+                      jumlahpinjam.text,
+                      norek,
+                      kegunaanpinjam.text,
                       tglpengembalian.text,
-                      termin.text,
-                      denda.text);
+                      terminpembayaran.text,
+                      formatdenda);
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.red,
@@ -333,7 +410,6 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   ),
                 ),
               ),
-              SizedBox(height: 5)
             ],
           ),
         ),

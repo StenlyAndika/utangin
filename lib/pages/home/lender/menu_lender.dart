@@ -4,10 +4,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/home/lender/evaluasi_pinjaman.dart';
+import '../../../pages/home/lender/evaluasi_pinjaman.dart';
+import '../../../pages/home/lender/tawarkan_pinjaman.dart';
 
 import '../../../models/pengajuan.dart';
 import '../menu_login.dart';
+import '../user/pengaturan.dart';
 
 class MenuLender extends StatefulWidget {
   const MenuLender({Key? key}) : super(key: key);
@@ -23,6 +25,12 @@ class _MenuLenderState extends State<MenuLender> {
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
+        break;
+      case 1:
+        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        break;
+      case 3:
+        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
         break;
     }
   }
@@ -288,7 +296,10 @@ class _MenuLenderState extends State<MenuLender> {
                         minWidth: 200.0,
                         height: 200.0,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(TawarkanPinjaman.nameRoute);
+                          },
                           child: Icon(
                             Icons.attach_money,
                             size: 30,

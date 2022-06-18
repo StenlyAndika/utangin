@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utangin/pages/home/lender/menu_lender.dart';
 import '../../pages/home/borrower/menu_borrower.dart';
 import '../../models/auth.dart';
@@ -83,6 +84,8 @@ class _MenuLoginState extends State<MenuLogin> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString("menu", "lender");
                     Navigator.of(context)
                         .pushReplacementNamed(MenuLender.nameRoute);
                   },
@@ -102,6 +105,8 @@ class _MenuLoginState extends State<MenuLogin> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString("menu", "borrower");
                     Navigator.of(context)
                         .pushReplacementNamed(MenuBorrower.nameRoute);
                   },
@@ -121,6 +126,8 @@ class _MenuLoginState extends State<MenuLogin> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.clear();
                     auth.logout(context);
                   },
                   style: ElevatedButton.styleFrom(

@@ -10,12 +10,16 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:utangin/pages/home/lender/sukses_revisi.dart';
 
 import '../pages/home/lender/sukses_konfirmasi.dart';
+import '../pages/home/lender/sukses_tawaran_peminjaman.dart';
 import '../pages/home/lender/upload__bukti_peminjaman.dart';
 import '../template/reusablewidgets.dart';
 
 class EvaluasiPinjamanModel with ChangeNotifier {
   List<dynamic> _datapinjaman = [];
   List<dynamic> get datapinjaman => _datapinjaman;
+
+  Map<dynamic, dynamic> _databorrower = {};
+  Map<dynamic, dynamic> get databorrower => _databorrower;
 
   Map<String, dynamic> _detailpinjaman = {};
   Map<String, dynamic> get detailpinjaman => _detailpinjaman;
@@ -26,6 +30,8 @@ class EvaluasiPinjamanModel with ChangeNotifier {
   var endpoint_acc = "User/Permohonan/ACC_lender";
   var endpoint_konfirmasi = "User/Transaksi/Konfirmasi_pinjaman";
   var endpoint_revisi = "User/Permohonan/Kirim_revisi_permohonan";
+  var endpoint_kirim_tawaran = "User/Penawaran/Kirim_tawaran";
+  var endpoint_cari_borrower = "User/Data_user/Read_email";
 
   getListPinjaman(String niklender) async {
     var hasilResponse =
@@ -39,6 +45,56 @@ class EvaluasiPinjamanModel with ChangeNotifier {
         .get(Uri.parse("$url/$endpoint_detail_pinjaman/$idpermohonan"));
     _detailpinjaman = await json.decode(hasilResponse.body)[0];
     notifyListeners();
+  }
+
+  Future cariBorrower(String email) async {
+    var hasilResponse =
+        await http.get(Uri.parse("$url/$endpoint_cari_borrower?email=$email"));
+    if (json.decode(hasilResponse.body).isEmpty) {
+      notifyListeners();
+      return _databorrower = {};
+    } else {
+      notifyListeners();
+      return _databorrower = await json.decode(hasilResponse.body)[0];
+    }
+  }
+
+  tawarkanPinjaman(context, ktp_borrower, jumlah_tawaran, tanggal_pengembalian,
+      denda) async {
+    ProgressDialog pd = ProgressDialog(context: context);
+    pd.show(max: -1, msg: "Mohon tunggu...");
+
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp_lender = await prefs.getString("ktp");
+    try {
+      var hasilResponse = await http.post(
+        Uri.parse("$url/$endpoint_kirim_tawaran"),
+        body: {
+          "ktp_lender": ktp_lender,
+          "ktp_borrower": ktp_borrower,
+          "jumlah_tawaran": jumlah_tawaran,
+          "tanggal_pengembalian": tanggal_pengembalian,
+          "denda": denda,
+        },
+      ).timeout(const Duration(seconds: 10));
+
+      if (hasilResponse.statusCode == 200) {
+        pd.close();
+        notifyListeners();
+        Navigator.of(context)
+            .pushReplacementNamed(NotifTawaranPeminjaman.nameRoute);
+      } else {
+        pd.close();
+        ReusableWidgets.alertNotification(
+            context, "Revisi Peminjaman gagal dikirim", Icons.error);
+      }
+    } on TimeoutException {
+      pd.close();
+      ReusableWidgets.alertNotification(
+          context,
+          "Koneksi waktu habis. Pastikan perangkat anda terhubung ke internet.",
+          Icons.error);
+    }
   }
 
   revisiPinjaman(context, id_permohonan, ket_revisi, jumlah, id_rekening,
@@ -63,7 +119,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
           "id_permohonan": id_permohonan
         },
       ).timeout(const Duration(seconds: 10));
-      print(hasilResponse.body);
+
       if (hasilResponse.statusCode == 200) {
         pd.close();
         notifyListeners();

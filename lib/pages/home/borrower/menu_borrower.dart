@@ -4,10 +4,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:utangin/pages/home/borrower/evaluasi_tawaran.dart';
 import 'package:utangin/pages/home/borrower/form_pengajuan.dart';
 
 import '../../../models/pengajuan.dart';
 import '../menu_login.dart';
+import '../user/pengaturan.dart';
 
 class MenuBorrower extends StatefulWidget {
   const MenuBorrower({Key? key}) : super(key: key);
@@ -23,6 +25,12 @@ class _MenuBorrowerState extends State<MenuBorrower> {
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
+        break;
+      case 1:
+        Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        break;
+      case 3:
+        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
         break;
     }
   }
@@ -355,7 +363,10 @@ class _MenuBorrowerState extends State<MenuBorrower> {
                         minWidth: 200.0,
                         height: 200.0,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(EvaluasiTawaran.nameRoute);
+                          },
                           child: Icon(
                             Icons.waving_hand,
                             size: 30,

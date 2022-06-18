@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/home/lender/form_revisi.dart';
-import 'package:utangin/pages/home/lender/sukses_revisi.dart';
+import '../pages/home/user/pengaturan.dart';
+import '../pages/home/borrower/form_pengajuan_tawaran.dart';
+import '../pages/home/borrower/tawaran_pinjaman.dart';
+import '../pages/home/borrower/evaluasi_tawaran.dart';
+import '../pages/home/lender/sukses_tawaran_peminjaman.dart';
+import '../pages/home/lender/form_revisi.dart';
+import '../pages/home/lender/sukses_revisi.dart';
+import '../pages/home/lender/tawarkan_pinjaman.dart';
 import '../pages/home/lender/detail_permohonan.dart';
 import '../pages/home/lender/sukses_konfirmasi.dart';
 import '../pages/home/lender/upload__bukti_peminjaman.dart';
@@ -23,6 +29,7 @@ import '../pages/landing.dart';
 import '../pages/home/borrower/sukses_pengajuan.dart';
 import '../pages/auth/form_login.dart';
 import '../models/pengajuan.dart';
+import '../models/evaluasi_tawaran_model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +71,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthModel()),
         ChangeNotifierProvider(create: (context) => PengajuanModel()),
         ChangeNotifierProvider(create: (context) => EvaluasiPinjamanModel()),
+        ChangeNotifierProvider(create: (context) => EvaluasiTawaranModel()),
       ],
       child: GestureDetector(
         onTap: () {
@@ -98,6 +106,9 @@ class MyApp extends StatelessWidget {
             FormLogin.nameRoute: (context) => const FormLogin(),
             NotifSuksesDaftar.nameRoute: (context) => const NotifSuksesDaftar(),
 
+            //user
+            Pengaturan.nameRoute: (context) => const Pengaturan(),
+
             // menu login
             MenuLogin.nameRoute: (context) => const MenuLogin(),
 
@@ -107,8 +118,17 @@ class MyApp extends StatelessWidget {
             NotifSuksesPengajuan.nameRoute: (context) =>
                 const NotifSuksesPengajuan(),
 
+            EvaluasiTawaran.nameRoute: (context) => const EvaluasiTawaran(),
+            TawaranPinjaman.nameRoute: (context) => const TawaranPinjaman(),
+            FormPengajuanTawaran.nameRoute: (context) =>
+                const FormPengajuanTawaran(),
+
             // fitur lender
             MenuLender.nameRoute: (context) => const MenuLender(),
+            TawarkanPinjaman.nameRoute: (context) => const TawarkanPinjaman(),
+            NotifTawaranPeminjaman.nameRoute: (context) =>
+                const NotifTawaranPeminjaman(),
+
             EvaluasiPinjaman.nameRoute: (context) => const EvaluasiPinjaman(),
             DetailPermohonan.nameRoute: (context) => const DetailPermohonan(),
             UploadBuktiPeminjaman.nameRoute: (context) =>

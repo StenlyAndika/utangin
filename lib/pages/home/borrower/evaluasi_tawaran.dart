@@ -2,30 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/models/evaluasi_pinjaman_model.dart';
-import 'package:utangin/pages/home/lender/detail_permohonan.dart';
-import 'package:utangin/pages/home/lender/upload__bukti_peminjaman.dart';
+import 'package:utangin/pages/home/borrower/menu_borrower.dart';
+import 'package:utangin/pages/home/borrower/tawaran_pinjaman.dart';
+import '../../../models/evaluasi_tawaran_model.dart';
 import '../../../pages/home/menu_login.dart';
 import '../user/pengaturan.dart';
-import 'menu_lender.dart';
 
-class EvaluasiPinjaman extends StatefulWidget {
-  const EvaluasiPinjaman({Key? key}) : super(key: key);
+class EvaluasiTawaran extends StatefulWidget {
+  const EvaluasiTawaran({Key? key}) : super(key: key);
 
-  static const nameRoute = '/pageEvaluasiPinjaman';
+  static const nameRoute = '/pageevaluasitawarankesaya';
 
   @override
-  State<EvaluasiPinjaman> createState() => _EvaluasiPinjamanState();
+  State<EvaluasiTawaran> createState() => _EvaluasiTawaranState();
 }
 
-class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
+class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
         break;
       case 3:
         Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
@@ -33,16 +32,16 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
     }
   }
 
-  getListPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
+  getListTawaran() async {
+    final session = Provider.of<EvaluasiTawaranModel>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? ktp = await prefs.getString("ktp");
-    session.getListPinjaman(ktp!);
+    session.getListTawaran(ktp!);
   }
 
   @override
   void initState() {
-    getListPinjaman();
+    getListTawaran();
     super.initState();
   }
 
@@ -84,7 +83,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Pengajuan Pinjaman",
+                  "Tawaran Pinjaman",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.black,
@@ -106,7 +105,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                       Container(
                         width: width * 0.33,
                         child: Text(
-                          "Nama Peminjam",
+                          "Nama Lender",
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
@@ -138,56 +137,43 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiPinjamanModel>(
+            Consumer<EvaluasiTawaranModel>(
               builder: (context, value, child) => Column(
                 children: [
-                  for (var i = 0; i < value.datapinjaman.length; i++) ...[
+                  for (var i = 0; i < value.datatawaran.length; i++) ...[
                     Wrap(
                       children: [
                         Container(
                           width: width * 0.2,
                           child: Text(
                             DateFormat('d-MM-yyyy').format(DateTime.parse(
-                                value.datapinjaman[i]["tanggal_pengajuan"])),
+                                value.datatawaran[i]["tanggal_diajukan"])),
                             style: TextStyle(fontSize: 11),
                           ),
                         ),
                         Container(
                           width: width * 0.33,
                           child: Text(
-                            value.datapinjaman[i]["nama_borrower"],
+                            value.datatawaran[i]["nama_lender"],
                             style: TextStyle(fontSize: 11),
                           ),
                         ),
                         Container(
                           width: width * 0.22,
                           child: Text(
-                            "Rp." + value.datapinjaman[i]["jumlah"],
+                            "Rp." + value.datatawaran[i]["jumlah_tawaran"],
                             style: TextStyle(fontSize: 11),
                           ),
                         ),
-                        if (value.datapinjaman[i]["status"] == "X") ...[
+                        if (value.datatawaran[i]["status"] == "0") ...[
                           Container(
                             width: width * 0.2,
                             padding: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              "Pengajuan",
+                              "Penawaran",
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ] else if (value.datapinjaman[i]["status"] == "0") ...[
-                          Container(
-                            width: width * 0.2,
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Dipinjamkan",
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.yellow,
+                                color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -197,7 +183,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                             width: width * 0.2,
                             padding: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              "Lunas",
+                              "Diterima",
                               style: TextStyle(
                                 fontSize: 11,
                                 color: Colors.green,
@@ -212,30 +198,22 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                       children: [
                         InkWell(
                           onTap: () async {
-                            if (value.datapinjaman[i]["status"] == "X") {
+                            if (value.datatawaran[i]["status"] == "0") {
                               final prefs =
                                   await SharedPreferences.getInstance();
-                              await prefs.setString('idp',
-                                  value.datapinjaman[i]["id_permohonan"]);
-                              if (value.datapinjaman[i]["acc_l"] == "1") {
-                                if (value.datapinjaman[i]["revisi"] == "1") {
-                                } else {
-                                  Navigator.of(context).pushReplacementNamed(
-                                      UploadBuktiPeminjaman.nameRoute);
-                                }
-                              } else {
-                                Navigator.of(context)
-                                    .pushNamed(DetailPermohonan.nameRoute);
-                              }
+                              await prefs.setString(
+                                  'idp', value.datatawaran[i]["id_penawaran"]);
+                              Navigator.of(context)
+                                  .pushNamed(TawaranPinjaman.nameRoute);
                             } else {
                               null;
                             }
                           },
                           child: Container(
-                            padding: EdgeInsets.only(right: 20),
-                            width: width * 0.45,
+                            padding: EdgeInsets.only(left: 70),
+                            width: width,
                             height: 40,
-                            alignment: Alignment.topRight,
+                            alignment: Alignment.topLeft,
                             child: Text(
                               "Lihat Detail",
                               style: TextStyle(
@@ -245,82 +223,6 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10),
-                        if (value.datapinjaman[i]["status"] == "X") ...[
-                          if (value.datapinjaman[i]["revisi"] == "1") ...[
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              width: width * 0.45,
-                              height: 40,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: InkWell(
-                                child: Text(
-                                  "Pinjaman direvisi",
-                                  style: TextStyle(
-                                      fontSize: 11, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ] else ...[
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              width: width * 0.45,
-                              height: 40,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: InkWell(
-                                child: Text(
-                                  "Peminjam Baru Mengajukan",
-                                  style: TextStyle(
-                                      fontSize: 11, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ]
-                        ] else if (value.datapinjaman[i]["status"] == "0") ...[
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            width: width * 0.45,
-                            height: 40,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: InkWell(
-                              child: Text(
-                                "Peminjam Belum Membayar",
-                                style: TextStyle(
-                                    fontSize: 11, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ] else ...[
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            width: width * 0.45,
-                            height: 40,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: InkWell(
-                              child: Text(
-                                "Peminjam Telah Membayar",
-                                style: TextStyle(
-                                    fontSize: 11, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ]
                       ],
                     ),
                     Divider(),

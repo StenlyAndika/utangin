@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../pages/home/borrower/menu_borrower.dart';
+import '../pages/home/lender/menu_lender.dart';
+import '../pages/home/menu_login.dart';
+import '../pages/home/user/pengaturan.dart';
+
 class ReusableWidgets {
   static bool isValidEmail(String email) {
     return RegExp(
@@ -141,5 +146,28 @@ class ReusableWidgets {
         ),
       ),
     );
+  }
+
+  static onItemTapped(int index, menu, context) {
+    int selected = 0;
+    switch (index) {
+      case 0:
+        selected = 0;
+        Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
+        break;
+      case 1:
+        selected = 1;
+        if (menu == "lender") {
+          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        } else {
+          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        }
+        break;
+      case 3:
+        selected = 3;
+        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
+        break;
+    }
+    return selected;
   }
 }
