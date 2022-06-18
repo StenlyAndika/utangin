@@ -4,12 +4,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/home/borrower/evaluasi_tawaran.dart';
-import 'package:utangin/pages/home/borrower/form_pengajuan.dart';
+import '../../../pages/home/borrower/evaluasi_tawaran.dart';
+import '../../../pages/home/borrower/form_pengajuan.dart';
 
 import '../../../models/pengajuan.dart';
+import '../../../template/reusablewidgets.dart';
+import '../lender/menu_lender.dart';
 import '../menu_login.dart';
-import '../user/pengaturan.dart';
 
 class MenuBorrower extends StatefulWidget {
   const MenuBorrower({Key? key}) : super(key: key);
@@ -21,16 +22,31 @@ class MenuBorrower extends StatefulWidget {
 }
 
 class _MenuBorrowerState extends State<MenuBorrower> {
+  String? menu;
+  int selected = 1;
+
+  getMenu() async {
+    final prefs = await SharedPreferences.getInstance();
+    menu = await prefs.getString("menu");
+  }
+
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
+        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        selected = 1;
+        if (menu == "lender") {
+          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        } else {
+          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        }
         break;
       case 3:
-        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
+        selected = 3;
+        ReusableWidgets.menuPengaturan(context);
         break;
     }
   }
@@ -44,6 +60,7 @@ class _MenuBorrowerState extends State<MenuBorrower> {
 
   @override
   void initState() {
+    getMenu();
     getUserData();
     super.initState();
   }
@@ -434,7 +451,7 @@ class _MenuBorrowerState extends State<MenuBorrower> {
             label: 'Pengaturan',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: selected,
         onTap: _onItemTapped,
       ),
     );

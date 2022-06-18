@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/evaluasi_pinjaman_model.dart';
+import '../../../template/reusablewidgets.dart';
+import '../borrower/menu_borrower.dart';
 import '../menu_login.dart';
-import '../user/pengaturan.dart';
 import 'menu_lender.dart';
 
 class TawarkanPinjaman extends StatefulWidget {
@@ -28,30 +29,38 @@ class _TawarkanPinjamanState extends State<TawarkanPinjaman> {
   late bool _emailfound;
   late String formattedDate;
 
+  String? menu;
+  int selected = 1;
+
+  getMenu() async {
+    final prefs = await SharedPreferences.getInstance();
+    menu = await prefs.getString("menu");
+  }
+
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
+        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        selected = 1;
+        if (menu == "lender") {
+          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        } else {
+          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        }
         break;
       case 3:
-        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
+        selected = 3;
+        ReusableWidgets.menuPengaturan(context);
         break;
     }
   }
 
-  getDetailPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? idp = await prefs.getString("idp");
-    await session.getDetailPinjaman(idp!);
-  }
-
   @override
   void initState() {
-    getDetailPinjaman();
+    getMenu();
     emailpeminjam = TextEditingController();
     jumlah = TextEditingController();
     tglpengembalian = TextEditingController();
@@ -145,7 +154,7 @@ class _TawarkanPinjamanState extends State<TawarkanPinjaman> {
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(5),
                   border: InputBorder.none,
-                  labelText: "Email Pemberi Pinjaman",
+                  labelText: "Email Peminjam",
                   labelStyle: const TextStyle(
                       color: Color.fromARGB(255, 110, 108, 108)),
                 ),
@@ -366,7 +375,7 @@ class _TawarkanPinjamanState extends State<TawarkanPinjaman> {
             label: 'Pengaturan',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: selected,
         onTap: _onItemTapped,
       ),
     );

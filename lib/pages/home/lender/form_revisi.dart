@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../template/reusablewidgets.dart';
 import '../../../models/evaluasi_pinjaman_model.dart';
+import '../borrower/menu_borrower.dart';
 import '../menu_login.dart';
-import '../user/pengaturan.dart';
 import 'menu_lender.dart';
 
 class RevisiPinjaman extends StatefulWidget {
@@ -31,16 +31,31 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
 
   late String ktptujuan;
 
+  String? menu;
+  int selected = 1;
+
+  getMenu() async {
+    final prefs = await SharedPreferences.getInstance();
+    menu = await prefs.getString("menu");
+  }
+
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
+        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        selected = 1;
+        if (menu == "lender") {
+          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        } else {
+          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        }
         break;
       case 3:
-        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
+        selected = 3;
+        ReusableWidgets.menuPengaturan(context);
         break;
     }
   }
@@ -54,6 +69,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
 
   @override
   void initState() {
+    getMenu();
     getDetailPinjaman();
     emailpeminjam = TextEditingController();
     namapeminjam = TextEditingController();
@@ -379,7 +395,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
             label: 'Pengaturan',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: selected,
         onTap: _onItemTapped,
       ),
     );

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../pages/home/user/pengaturan.dart';
 import '../pages/home/borrower/form_pengajuan_tawaran.dart';
 import '../pages/home/borrower/tawaran_pinjaman.dart';
 import '../pages/home/borrower/evaluasi_tawaran.dart';
@@ -105,9 +104,6 @@ class MyApp extends StatelessWidget {
             FormDaftar.nameRoute: (context) => const FormDaftar(),
             FormLogin.nameRoute: (context) => const FormLogin(),
             NotifSuksesDaftar.nameRoute: (context) => const NotifSuksesDaftar(),
-
-            //user
-            Pengaturan.nameRoute: (context) => const Pengaturan(),
 
             // menu login
             MenuLogin.nameRoute: (context) => const MenuLogin(),

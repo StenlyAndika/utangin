@@ -6,13 +6,12 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/json/json_rekening.dart';
-import 'package:utangin/pages/home/menu_login.dart';
-import 'package:utangin/template/reusablewidgets.dart';
-
+import '../../../json/json_rekening.dart';
+import '../../../pages/home/menu_login.dart';
+import '../../../template/reusablewidgets.dart';
 import '../../../models/evaluasi_tawaran_model.dart';
 import '../../../models/pengajuan.dart';
-import '../user/pengaturan.dart';
+import '../lender/menu_lender.dart';
 import 'menu_borrower.dart';
 
 class FormPengajuanTawaran extends StatefulWidget {
@@ -38,16 +37,31 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
   String? tglp;
   String? id_penawaran;
 
+  String? menu;
+  int selected = 1;
+
+  getMenu() async {
+    final prefs = await SharedPreferences.getInstance();
+    menu = await prefs.getString("menu");
+  }
+
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
+        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        selected = 1;
+        if (menu == "lender") {
+          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        } else {
+          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        }
         break;
       case 3:
-        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
+        selected = 3;
+        ReusableWidgets.menuPengaturan(context);
         break;
     }
   }
@@ -68,6 +82,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
 
   @override
   void initState() {
+    getMenu();
     getDetailTawaran();
     emailtujuan = TextEditingController();
     namapemberipinjaman = TextEditingController();
@@ -455,7 +470,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
             label: 'Pengaturan',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: selected,
         onTap: _onItemTapped,
       ),
     );

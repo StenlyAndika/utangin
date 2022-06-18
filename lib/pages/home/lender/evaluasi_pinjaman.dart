@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/models/evaluasi_pinjaman_model.dart';
-import 'package:utangin/pages/home/lender/detail_permohonan.dart';
-import 'package:utangin/pages/home/lender/upload__bukti_peminjaman.dart';
+import '../../../models/evaluasi_pinjaman_model.dart';
+import '../../../pages/home/lender/detail_permohonan.dart';
+import '../../../pages/home/lender/upload__bukti_peminjaman.dart';
 import '../../../pages/home/menu_login.dart';
-import '../user/pengaturan.dart';
+import '../../../template/reusablewidgets.dart';
+import '../borrower/menu_borrower.dart';
 import 'menu_lender.dart';
 
 class EvaluasiPinjaman extends StatefulWidget {
@@ -19,16 +20,31 @@ class EvaluasiPinjaman extends StatefulWidget {
 }
 
 class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
+  String? menu;
+  int selected = 1;
+
+  getMenu() async {
+    final prefs = await SharedPreferences.getInstance();
+    menu = await prefs.getString("menu");
+  }
+
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
+        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        selected = 1;
+        if (menu == "lender") {
+          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        } else {
+          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        }
         break;
       case 3:
-        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
+        selected = 3;
+        ReusableWidgets.menuPengaturan(context);
         break;
     }
   }
@@ -42,6 +58,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
 
   @override
   void initState() {
+    getMenu();
     getListPinjaman();
     super.initState();
   }
@@ -372,7 +389,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
             label: 'Pengaturan',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: selected,
         onTap: _onItemTapped,
       ),
     );

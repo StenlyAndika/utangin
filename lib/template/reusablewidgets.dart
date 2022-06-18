@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../pages/home/borrower/menu_borrower.dart';
-import '../pages/home/lender/menu_lender.dart';
-import '../pages/home/menu_login.dart';
-import '../pages/home/user/pengaturan.dart';
-
 class ReusableWidgets {
   static bool isValidEmail(String email) {
     return RegExp(
@@ -148,26 +143,58 @@ class ReusableWidgets {
     );
   }
 
-  static onItemTapped(int index, menu, context) {
-    int selected = 0;
-    switch (index) {
-      case 0:
-        selected = 0;
-        Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
-        break;
-      case 1:
-        selected = 1;
-        if (menu == "lender") {
-          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
-        } else {
-          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
-        }
-        break;
-      case 3:
-        selected = 3;
-        Navigator.of(context).pushReplacementNamed(Pengaturan.nameRoute);
-        break;
-    }
-    return selected;
+  static menuPengaturan(context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          padding: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
+          alignment: Alignment.center,
+          child: ListView(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    "U",
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    " T A N G I N . C O M",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "Pengaturan",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Divider(),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text("Data Rekening"),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 40),
+                ),
+              ),
+              Divider(),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
