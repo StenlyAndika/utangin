@@ -76,7 +76,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
           "tanggal_pengembalian": tanggal_pengembalian,
           "denda": denda,
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(Duration(seconds: 10));
 
       if (hasilResponse.statusCode == 200) {
         pd.close();
@@ -118,7 +118,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
           "ket_revisi": ket_revisi,
           "id_permohonan": id_permohonan
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(Duration(seconds: 10));
 
       if (hasilResponse.statusCode == 200) {
         pd.close();
@@ -149,7 +149,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
         body: {
           "ktp": ktp,
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(Duration(seconds: 10));
       if (hasilResponse.statusCode == 200) {
         pd.close();
         notifyListeners();
@@ -191,6 +191,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
       var response = await request.send();
       final respStr = await response.stream.bytesToString();
       var msg = json.decode(respStr);
+
       if (response.statusCode == 200) {
         pd.close();
         notifyListeners();

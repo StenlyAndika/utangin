@@ -11,7 +11,7 @@ import '../../../template/reusablewidgets.dart';
 import 'form_daftar.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  AuthPage({Key? key}) : super(key: key);
 
   static const nameRoute = '/pageauthentication';
 
@@ -78,10 +78,10 @@ class _AuthPageState extends State<AuthPage> {
       extendBodyBehindAppBar: true,
       appBar: ReusableWidgets.backAppBar("", context),
       body: Container(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+        padding: EdgeInsets.only(left: 20, right: 20, top: 20),
         child: ListView(
           children: [
-            const Text(
+            Text(
               "Selamat Bergabung",
               textAlign: TextAlign.left,
               style: TextStyle(
@@ -89,12 +89,12 @@ class _AuthPageState extends State<AuthPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             InkWell(
               onTap: () {
                 Navigator.of(context).pushReplacementNamed(FormLogin.nameRoute);
               },
-              child: const SizedBox(
+              child: SizedBox(
                 height: 40,
                 child: Text(
                   "Masuk ke akunmu",
@@ -106,14 +106,14 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             ReusableWidgets.inputField("No HP", nohp, TextInputType.phone),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Container(
-              padding: const EdgeInsets.only(left: 5),
+              padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
@@ -127,7 +127,7 @@ class _AuthPageState extends State<AuthPage> {
                     }
                   });
                 },
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                 ),
@@ -135,7 +135,7 @@ class _AuthPageState extends State<AuthPage> {
                 autocorrect: false,
                 keyboardType: TextInputType.emailAddress,
                 enableSuggestions: false,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(5),
                   border: InputBorder.none,
                   labelText: "Email",
@@ -145,16 +145,16 @@ class _AuthPageState extends State<AuthPage> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.only(left: 10),
+              padding: EdgeInsets.only(left: 10),
               child: Column(
                 children: [
                   if (email.text != "" && otpsend == false) ...[
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5),
                     Row(
                       children: [
                         Consumer<AuthModel>(
                           builder: (context, value, child) => AnimatedContainer(
-                            duration: const Duration(milliseconds: 500),
+                            duration: Duration(milliseconds: 500),
                             width: 15,
                             height: 15,
                             decoration: BoxDecoration(
@@ -169,18 +169,18 @@ class _AuthPageState extends State<AuthPage> {
                                 borderRadius: BorderRadius.circular(50)),
                             child: Center(
                               child: (value.emailterdaftar == "true")
-                                  ? const Icon(
+                                  ? Icon(
                                       Icons.close_rounded,
                                       color: Colors.white,
                                       size: 10,
                                     )
                                   : (_emailvalid == true)
-                                      ? const Icon(
+                                      ? Icon(
                                           Icons.check,
                                           color: Colors.white,
                                           size: 10,
                                         )
-                                      : const Icon(
+                                      : Icon(
                                           Icons.close_rounded,
                                           color: Colors.white,
                                           size: 10,
@@ -188,7 +188,7 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        SizedBox(width: 10),
                         Consumer<AuthModel>(
                           builder: (context, value, child) => Text(
                             (value.emailterdaftar == "true")
@@ -196,7 +196,7 @@ class _AuthPageState extends State<AuthPage> {
                                 : (_emailvalid == true)
                                     ? "Email siap digunakan"
                                     : "Email tidak valid",
-                            style: const TextStyle(fontSize: 12),
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
                       ],
@@ -207,21 +207,21 @@ class _AuthPageState extends State<AuthPage> {
             ),
             Column(
               children: [
-                const SizedBox(height: 5),
+                SizedBox(height: 5),
                 Visibility(
                   visible: (otpsend == true) ? true : false,
                   child: Container(
-                    padding: const EdgeInsets.only(left: 5),
+                    padding: EdgeInsets.only(left: 5),
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: const Color.fromARGB(255, 184, 174, 174)),
+                          color: Color.fromARGB(255, 184, 174, 174)),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
                       textInputAction: TextInputAction.next,
                       controller: kodeotp,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -230,7 +230,7 @@ class _AuthPageState extends State<AuthPage> {
                       autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
                       enableSuggestions: false,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(5),
                         border: InputBorder.none,
                         labelText: "Kode OTP",
@@ -247,7 +247,7 @@ class _AuthPageState extends State<AuthPage> {
                 visible: (otpsend == true) ? true : false,
                 child: Column(
                   children: [
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5),
                     ElevatedButton(
                       onPressed: () async {
                         if (value.verifotp == kodeotp.text) {
@@ -270,12 +270,12 @@ class _AuthPageState extends State<AuthPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
+                        minimumSize: Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Verifikasi",
                         style: TextStyle(fontSize: 15),
                       ),
@@ -293,7 +293,7 @@ class _AuthPageState extends State<AuthPage> {
                     : false,
                 child: Column(
                   children: [
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5),
                     ElevatedButton(
                       onPressed: (_start == false)
                           ? () {
@@ -310,7 +310,7 @@ class _AuthPageState extends State<AuthPage> {
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
+                        minimumSize: Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

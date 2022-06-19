@@ -9,7 +9,7 @@ import '../../../models/auth.dart';
 import '../../../template/reusablewidgets.dart';
 
 class FormDaftar extends StatefulWidget {
-  const FormDaftar({Key? key}) : super(key: key);
+  FormDaftar({Key? key}) : super(key: key);
 
   static const nameRoute = '/page4';
 
@@ -38,7 +38,7 @@ class _FormDaftarState extends State<FormDaftar> {
       context: context,
       builder: (BuildContext bc) {
         return Container(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           height: 120,
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -47,7 +47,7 @@ class _FormDaftarState extends State<FormDaftar> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.folder),
+                  icon: Icon(Icons.folder),
                   onPressed: () {
                     Navigator.of(context).pop();
                     ReusableWidgets.openGallery(stat).then((pickedImage) {
@@ -64,7 +64,7 @@ class _FormDaftarState extends State<FormDaftar> {
                       }
                     });
                   },
-                  label: const Text(
+                  label: Text(
                     "Gallery",
                     style: TextStyle(fontSize: 15),
                   ),
@@ -76,11 +76,11 @@ class _FormDaftarState extends State<FormDaftar> {
                     ),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 10,
                 ),
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.camera),
+                  icon: Icon(Icons.camera),
                   onPressed: () {
                     Navigator.of(context).pop();
                     ReusableWidgets.openCamera(stat).then((pickedImage) {
@@ -97,7 +97,7 @@ class _FormDaftarState extends State<FormDaftar> {
                       }
                     });
                   },
-                  label: const Text(
+                  label: Text(
                     "Kamera",
                     style: TextStyle(fontSize: 15),
                   ),
@@ -159,11 +159,11 @@ class _FormDaftarState extends State<FormDaftar> {
       extendBodyBehindAppBar: true,
       appBar: ReusableWidgets.backAppBar("Daftar", context),
       body: Container(
-        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-        margin: const EdgeInsets.all(10),
+        padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+        margin: EdgeInsets.all(10),
         child: ListView(
           children: [
-            const Text(
+            Text(
               "Selamat Bergabung",
               textAlign: TextAlign.left,
               style: TextStyle(
@@ -171,12 +171,12 @@ class _FormDaftarState extends State<FormDaftar> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             InkWell(
               onTap: () {
                 Navigator.of(context).pushReplacementNamed(FormLogin.nameRoute);
               },
-              child: const SizedBox(
+              child: SizedBox(
                 height: 20,
                 child: Text(
                   "Masuk ke akunmu",
@@ -186,17 +186,17 @@ class _FormDaftarState extends State<FormDaftar> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             Container(
-              padding: const EdgeInsets.only(left: 5),
+              padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
                 controller: email..text = args.message,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.red,
@@ -205,7 +205,7 @@ class _FormDaftarState extends State<FormDaftar> {
                 autocorrect: false,
                 readOnly: true,
                 enableSuggestions: false,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(5),
                   border: InputBorder.none,
                   labelText: "Email",
@@ -214,19 +214,19 @@ class _FormDaftarState extends State<FormDaftar> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Container(
-              padding: const EdgeInsets.only(left: 5),
+              padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
                 controller: password,
                 onChanged: (password) => onPasswordChanged(password),
                 textCapitalization: TextCapitalization.none,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                 ),
@@ -235,7 +235,7 @@ class _FormDaftarState extends State<FormDaftar> {
                 obscureText: _isVisible,
                 enableSuggestions: false,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(5),
+                  contentPadding: EdgeInsets.all(5),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -243,12 +243,12 @@ class _FormDaftarState extends State<FormDaftar> {
                       });
                     },
                     icon: _isVisible
-                        ? const Icon(Icons.visibility_off)
-                        : const Icon(Icons.visibility),
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
                   ),
                   border: InputBorder.none,
                   labelText: "Password",
-                  labelStyle: const TextStyle(
+                  labelStyle: TextStyle(
                       color: Color.fromARGB(255, 110, 108, 108)),
                 ),
               ),
@@ -256,11 +256,11 @@ class _FormDaftarState extends State<FormDaftar> {
             Column(
               children: [
                 if (password.text != "") ...[
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5),
                   Row(
                     children: [
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 500),
+                        duration: Duration(milliseconds: 500),
                         width: 15,
                         height: 15,
                         decoration: BoxDecoration(
@@ -271,7 +271,7 @@ class _FormDaftarState extends State<FormDaftar> {
                                 ? Border.all(color: Colors.transparent)
                                 : Border.all(color: Colors.grey.shade400),
                             borderRadius: BorderRadius.circular(50)),
-                        child: const Center(
+                        child: Center(
                           child: Icon(
                             Icons.check,
                             color: Colors.white,
@@ -279,18 +279,18 @@ class _FormDaftarState extends State<FormDaftar> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      const Text(
+                      SizedBox(width: 10),
+                      Text(
                         "Minimal 8 huruf",
                         style: TextStyle(fontSize: 12),
                       )
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Row(
                     children: [
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 500),
+                        duration: Duration(milliseconds: 500),
                         width: 15,
                         height: 15,
                         decoration: BoxDecoration(
@@ -301,7 +301,7 @@ class _FormDaftarState extends State<FormDaftar> {
                                 ? Border.all(color: Colors.transparent)
                                 : Border.all(color: Colors.grey.shade400),
                             borderRadius: BorderRadius.circular(50)),
-                        child: const Center(
+                        child: Center(
                           child: Icon(
                             Icons.check,
                             color: Colors.white,
@@ -309,8 +309,8 @@ class _FormDaftarState extends State<FormDaftar> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      const Text(
+                      SizedBox(width: 10),
+                      Text(
                         "Memiliki setidaknya 1 angka",
                         style: TextStyle(fontSize: 12),
                       )
@@ -319,15 +319,15 @@ class _FormDaftarState extends State<FormDaftar> {
                 ]
               ],
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "No HP", nohp..text = args.title, TextInputType.phone),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Container(
-              padding: const EdgeInsets.only(left: 5),
+              padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
@@ -337,14 +337,14 @@ class _FormDaftarState extends State<FormDaftar> {
                     daftar.checkKtp(ktp);
                   });
                 },
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                 ),
                 cursorColor: Colors.black,
                 autocorrect: false,
                 enableSuggestions: false,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(5),
                   border: InputBorder.none,
                   labelText: "Nomor NIK/KTP",
@@ -358,18 +358,18 @@ class _FormDaftarState extends State<FormDaftar> {
                 builder: (context, value, child) => Visibility(
                   visible: (value.ktpterdaftar == "true") ? true : false,
                   child: Container(
-                    padding: const EdgeInsets.only(left: 5, top: 5),
+                    padding: EdgeInsets.only(left: 5, top: 5),
                     child: Row(
                       children: [
                         AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
+                          duration: Duration(milliseconds: 500),
                           width: 15,
                           height: 15,
                           decoration: BoxDecoration(
                               color: Colors.red,
                               border: Border.all(color: Colors.red),
                               borderRadius: BorderRadius.circular(50)),
-                          child: const Center(
+                          child: Center(
                             child: Icon(
                               Icons.close,
                               color: Colors.white,
@@ -377,8 +377,8 @@ class _FormDaftarState extends State<FormDaftar> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        const Text(
+                        SizedBox(width: 10),
+                        Text(
                           "NIK telah terdaftar",
                           style: TextStyle(fontSize: 12),
                         )
@@ -388,27 +388,27 @@ class _FormDaftarState extends State<FormDaftar> {
                 ),
               ),
             ],
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Nama Lengkap", nama, TextInputType.text),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             inputJekel(),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Container(
-              padding: const EdgeInsets.only(left: 5),
+              padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
                 readOnly: true,
                 controller: tgllahir,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                 ),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(5),
                   border: InputBorder.none,
                   labelText: "Tanggal Lahir",
@@ -432,23 +432,23 @@ class _FormDaftarState extends State<FormDaftar> {
                 },
               ),
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField("NPWP", npwp, TextInputType.text),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Alamat Sesuai KTP", alamat, TextInputType.text),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField("RT/RW", rt, TextInputType.number),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Provinsi", provinsi, TextInputType.text),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Pendidikan Terakhir", pendidikan, TextInputType.text),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Pekerjaan", pekerjaan, TextInputType.text),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -456,27 +456,27 @@ class _FormDaftarState extends State<FormDaftar> {
                   width: 70,
                   height: 70,
                   child:
-                      _fotoktp == null ? const Text("") : Image.file(_fotoktp!),
+                      _fotoktp == null ? Text("") : Image.file(_fotoktp!),
                 ),
-                const SizedBox(width: 5),
+                SizedBox(width: 5),
                 SizedBox(
                   width: 70,
                   height: 70,
                   child: _fotoselfie == null
-                      ? const Text("")
+                      ? Text("")
                       : Image.file(_fotoselfie!),
                 ),
-                const SizedBox(width: 5),
+                SizedBox(width: 5),
                 SizedBox(
                   width: 70,
                   height: 70,
                   child: _tandatangan == null
-                      ? const Text("")
+                      ? Text("")
                       : Image.file(_tandatangan!),
                 ),
               ],
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Align(
               alignment: FractionalOffset.bottomCenter,
               child: Column(
@@ -489,49 +489,49 @@ class _FormDaftarState extends State<FormDaftar> {
                       showOptionMenu(1);
                     },
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Foto KTP",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5),
                   ElevatedButton(
                     onPressed: () {
                       showOptionMenu(2);
                     },
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Foto diri dengan KTP",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5),
                   ElevatedButton(
                     onPressed: () {
                       showOptionMenu(3);
                     },
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Upload Tanda Tangan",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
                       if (_fotoktp == null) {
@@ -569,12 +569,12 @@ class _FormDaftarState extends State<FormDaftar> {
                           context);
                     },
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Kirim",
                       style: TextStyle(fontSize: 15),
                     ),
@@ -582,7 +582,7 @@ class _FormDaftarState extends State<FormDaftar> {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
           ],
         ),
       ),
@@ -592,15 +592,15 @@ class _FormDaftarState extends State<FormDaftar> {
   Container inputJekel() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+        border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 10),
+        padding: EdgeInsets.only(left: 10),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: jekel,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),

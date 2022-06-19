@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
-import '../../../pages/landing.dart';
+import 'package:utangin/pages/home/borrower/menu_borrower.dart';
 
-class NotifSuksesDaftar extends StatelessWidget {
-  NotifSuksesDaftar({Key? key}) : super(key: key);
+class NotifSuksesPelunasan extends StatelessWidget {
+  NotifSuksesPelunasan({Key? key}) : super(key: key);
 
-  static const nameRoute = '/page2';
+  static const nameRoute = '/pagelunas';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
       body: Stack(
         children: [
           Image.asset(
@@ -23,11 +34,9 @@ class NotifSuksesDaftar extends StatelessWidget {
             alignment: Alignment.center,
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
-              child: ListView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -46,8 +55,7 @@ class NotifSuksesDaftar extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    "Akunmu telah terdaftar",
-                    textAlign: TextAlign.center,
+                    "pelunasanmu telah dikirim",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
@@ -58,7 +66,7 @@ class NotifSuksesDaftar extends StatelessWidget {
                     height: 30,
                   ),
                   Text(
-                    "Selamat bergabung di aplikasi pendokumentasian pinjam-meminjammu. Kami akan melakukan review atas akunmu. Kami akan menginformasikan via email terkait status akunmu.",
+                    "Peminjam (lender) akan mengevaluasi berkas pelunasanmu. Jika kamu telah mengirimkannya via transfer (wire) otomatis pembayaranmu telah diterima oleh pemberi pinjaman (lender).",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
@@ -95,7 +103,7 @@ class NotifSuksesDaftar extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context)
-                            .pushReplacementNamed(MyHomePage.nameRoute);
+                            .pushReplacementNamed(MenuBorrower.nameRoute);
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size.fromHeight(40),
@@ -104,7 +112,7 @@ class NotifSuksesDaftar extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        "Kembali",
+                        "Kembali Ke Beranda",
                         style: TextStyle(fontSize: 15),
                       ),
                     ),

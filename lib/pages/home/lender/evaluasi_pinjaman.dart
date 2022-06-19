@@ -11,7 +11,7 @@ import '../borrower/menu_borrower.dart';
 import 'menu_lender.dart';
 
 class EvaluasiPinjaman extends StatefulWidget {
-  const EvaluasiPinjaman({Key? key}) : super(key: key);
+  EvaluasiPinjaman({Key? key}) : super(key: key);
 
   static const nameRoute = '/pageEvaluasiPinjaman';
 
@@ -75,13 +75,13 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
           elevation: 0,
           flexibleSpace: Container(
             padding:
-                const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
+                EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
             alignment: Alignment.center,
             child: ListView(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       "U",
                       style: TextStyle(
@@ -99,8 +99,8 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                const Text(
+                SizedBox(height: 10),
+                Text(
                   "Pengajuan Pinjaman",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -151,7 +151,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
         ),
       ),
       body: Container(
-        padding: const EdgeInsets.only(left: 5, right: 5, top: 0, bottom: 10),
+        padding: EdgeInsets.only(left: 5, right: 5, top: 0, bottom: 10),
         alignment: Alignment.center,
         child: ListView(
           children: [
@@ -164,7 +164,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                         Container(
                           width: width * 0.2,
                           child: Text(
-                            DateFormat('d-MM-yyyy').format(DateTime.parse(
+                            DateFormat('dd-MM-yyyy').format(DateTime.parse(
                                 value.datapinjaman[i]["tanggal_pengajuan"])),
                             style: TextStyle(fontSize: 11),
                           ),
@@ -241,8 +241,8 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                                       UploadBuktiPeminjaman.nameRoute);
                                 }
                               } else {
-                                Navigator.of(context)
-                                    .pushNamed(DetailPermohonan.nameRoute);
+                                Navigator.of(context).pushReplacementNamed(
+                                    DetailPermohonan.nameRoute);
                               }
                             } else {
                               null;
@@ -351,15 +351,15 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.black,
-        unselectedLabelStyle: const TextStyle(
+        unselectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        selectedLabelStyle: const TextStyle(
+        selectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,

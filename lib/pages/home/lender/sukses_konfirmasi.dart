@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:utangin/pages/home/lender/evaluasi_pinjaman.dart';
 
 class NotifPeminjamanTerdokumentasi extends StatelessWidget {
-  const NotifPeminjamanTerdokumentasi({Key? key}) : super(key: key);
+  NotifPeminjamanTerdokumentasi({Key? key}) : super(key: key);
 
   static const nameRoute = '/page25';
 
@@ -12,7 +12,7 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
@@ -40,7 +40,7 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "U",
                         style: TextStyle(
@@ -57,12 +57,12 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "Selamat",
                         style: TextStyle(
@@ -77,7 +77,7 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
+                  Text(
                     "peminjamanmu telah terdokumentasi",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -86,10 +86,10 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
-                  const Text(
+                  Text(
                     "Cek riwayat peminjamanmu untuk mengetahui kondisi terbaru atas peminjamanmu.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -97,19 +97,19 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                       fontSize: 15,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
                   ElevatedButton(
                     onPressed: () async {},
                     style: ElevatedButton.styleFrom(
                       primary: Color.fromARGB(255, 112, 110, 110),
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Download Kontrak Peminjaman",
                       style: TextStyle(fontSize: 15),
                     ),
@@ -122,17 +122,17 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.red,
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Kembali Ke Beranda",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 100,
                   ),
                 ],

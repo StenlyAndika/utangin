@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'menu_lender.dart';
 
-class NotifSuksesPelunasan extends StatelessWidget {
-  const NotifSuksesPelunasan({Key? key}) : super(key: key);
+class NotifSuksesPelunasanLender extends StatelessWidget {
+  NotifSuksesPelunasanLender({Key? key}) : super(key: key);
 
-  static const nameRoute = '/page12';
+  static const nameRoute = '/pagelunaslender';
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class NotifSuksesPelunasan extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
@@ -38,7 +39,7 @@ class NotifSuksesPelunasan extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "Selamat",
                         style: TextStyle(
@@ -53,31 +54,23 @@ class NotifSuksesPelunasan extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
-                    "pelunasanmu telah dikirim",
+                  Text(
+                    "Konfirmasi pelunasan telah kamu setujui",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
-                  const Text(
-                    "Peminjam (lender) akan mengevaluasi berkas pelunasanmu. Jika kamu telah mengirimkannya via transfer (wire) otomatis pembayaranmu telah diterima oleh pemberi pinjaman (lender).",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                    ),
-                  ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "U",
                         style: TextStyle(
@@ -94,26 +87,29 @@ class NotifSuksesPelunasan extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(MenuLender.nameRoute);
+                      },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(40),
+                        minimumSize: Size.fromHeight(40),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Kembali Ke Beranda",
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 100,
                   ),
                 ],

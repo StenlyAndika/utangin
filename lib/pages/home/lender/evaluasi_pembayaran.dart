@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../pages/home/borrower/menu_borrower.dart';
-import '../../../pages/home/borrower/tawaran_pinjaman.dart';
-import '../../../models/evaluasi_tawaran_model.dart';
+import 'package:utangin/pages/home/borrower/detail_cicilan.dart';
+import '../../../models/evaluasi_hutang_model.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
+import '../borrower/menu_borrower.dart';
 import '../lender/menu_lender.dart';
 
-class EvaluasiTawaran extends StatefulWidget {
-  EvaluasiTawaran({Key? key}) : super(key: key);
+class EvaluasiPembayaran extends StatefulWidget {
+  EvaluasiPembayaran({Key? key}) : super(key: key);
 
-  static const nameRoute = '/pageevaluasitawarankesaya';
+  static const nameRoute = '/pageEvaluasiPembayaran';
 
   @override
-  State<EvaluasiTawaran> createState() => _EvaluasiTawaranState();
+  State<EvaluasiPembayaran> createState() => _EvaluasiPembayaranState();
 }
 
-class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
+class _EvaluasiPembayaranState extends State<EvaluasiPembayaran> {
   String? menu;
   int selected = 1;
 
@@ -48,17 +48,17 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
     }
   }
 
-  getListTawaran() async {
-    final session = Provider.of<EvaluasiTawaranModel>(context, listen: false);
+  getListCicilan() async {
+    final session = Provider.of<EvaluasiHutangModel>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
-    String? ktp = await prefs.getString("ktp");
-    session.getListTawaran(ktp!);
+    String? idt = await prefs.getString("id_transaksi");
+    session.getListCicilan(idt!);
   }
 
   @override
   void initState() {
     getMenu();
-    getListTawaran();
+    getListCicilan();
     super.initState();
   }
 
@@ -73,8 +73,7 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
           automaticallyImplyLeading: false,
           elevation: 0,
           flexibleSpace: Container(
-            padding:
-                EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
+            padding: EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
             alignment: Alignment.center,
             child: ListView(
               children: [
@@ -100,7 +99,7 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Tawaran Pinjaman",
+                  "Daftar Cicilan",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.black,
@@ -113,30 +112,30 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
                   child: Row(
                     children: [
                       Container(
-                        width: width * 0.21,
+                        width: width * 0.2,
                         child: Text(
-                          "Tanggal",
+                          "Cicilan Ke",
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
                       Container(
-                        width: width * 0.33,
+                        width: width * 0.3,
                         child: Text(
-                          "Nama Lender",
+                          "Tenggat Waktu",
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
                       Container(
-                        width: width * 0.22,
+                        width: width * 0.25,
                         child: Text(
                           "Jumlah",
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
                       Container(
-                        width: width * 0.2,
+                        width: width * 0.3,
                         child: Text(
-                          "Status",
+                          "Opsi",
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
@@ -150,96 +149,93 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.only(left: 5, right: 5, top: 0, bottom: 10),
+        padding: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 10),
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiTawaranModel>(
+            Consumer<EvaluasiHutangModel>(
               builder: (context, value, child) => Column(
                 children: [
-                  for (var i = 0; i < value.datatawaran.length; i++) ...[
+                  for (var i = 0; i < value.listcicilan.length; i++) ...[
                     Wrap(
                       children: [
                         Container(
-                          width: width * 0.2,
+                          height: 40,
+                          alignment: Alignment.center,
+                          width: width * 0.15,
                           child: Text(
-                            DateFormat('d-MM-yyyy').format(DateTime.parse(
-                                value.datatawaran[i]["tanggal_diajukan"])),
-                            style: TextStyle(fontSize: 11),
+                            value.listcicilan[i]["cicilan_ke"],
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
                         Container(
-                          width: width * 0.33,
+                          height: 40,
+                          alignment: Alignment.centerRight,
+                          width: width * 0.25,
                           child: Text(
-                            value.datatawaran[i]["nama_lender"],
-                            style: TextStyle(fontSize: 11),
+                            DateFormat('dd-MM-yyyy').format(DateTime.parse(
+                                value.listcicilan[i]["tanggal_batas"])),
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
                         Container(
-                          width: width * 0.22,
+                          height: 40,
+                          alignment: Alignment.centerRight,
+                          width: width * 0.25,
                           child: Text(
-                            "Rp." + value.datatawaran[i]["jumlah_tawaran"],
-                            style: TextStyle(fontSize: 11),
+                            "Rp." + value.listcicilan[i]["jml_angsuran"],
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
-                        if (value.datatawaran[i]["status"] == "0") ...[
+                        SizedBox(width: 5),
+                        if (value.listcicilan[i]["status"] == "0") ...[
                           Container(
-                            width: width * 0.2,
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Penawaran",
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
+                            width: width * 0.3,
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString("id_cicilan",
+                                    value.listcicilan[i]["id_cicilan"]);
+                                Navigator.of(context).pushReplacementNamed(
+                                    DetailCicilan.nameRoute);
+                              },
+                              child: Text(
+                                "Bayar",
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.cyan,
+                                fixedSize: Size(50, 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
                               ),
                             ),
                           ),
-                        ] else ...[
+                        ] else if (value.listcicilan[i]["status"] == "1") ...[
                           Container(
-                            width: width * 0.2,
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Diterima",
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
+                            width: width * 0.3,
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "Telah Bayar",
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.green,
+                                fixedSize: Size(50, 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
                               ),
                             ),
                           ),
                         ]
-                      ],
-                    ),
-                    Wrap(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            if (value.datatawaran[i]["status"] == "0") {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              await prefs.setString(
-                                  'idp', value.datatawaran[i]["id_penawaran"]);
-                              Navigator.of(context)
-                                  .pushNamed(TawaranPinjaman.nameRoute);
-                            } else {
-                              null;
-                            }
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(left: 70),
-                            width: width,
-                            height: 40,
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Lihat Detail",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                     Divider(),

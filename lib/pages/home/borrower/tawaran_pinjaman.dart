@@ -9,7 +9,7 @@ import '../menu_login.dart';
 import 'menu_borrower.dart';
 
 class TawaranPinjaman extends StatefulWidget {
-  const TawaranPinjaman({Key? key}) : super(key: key);
+  TawaranPinjaman({Key? key}) : super(key: key);
 
   static const nameRoute = '/pageTawaranPinjaman';
 
@@ -80,13 +80,13 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
       body: Consumer<EvaluasiTawaranModel>(
         builder: (context, value, child) => Container(
           padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+              EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           alignment: Alignment.center,
           child: ListView(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     "U",
                     style: TextStyle(
@@ -104,7 +104,7 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                   ),
                 ],
               ),
-              const Text(
+              Text(
                 "Tawaran Pinjaman",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -112,18 +112,18 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                     fontSize: 22,
                     fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   controller: emaillender
                     ..text = value.detailtawaran["email_lender"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -133,26 +133,26 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                   keyboardType: TextInputType.emailAddress,
                   enableSuggestions: false,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
+                    contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Email Pemberi Pinjaman",
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   controller: jumlah
                     ..text = value.detailtawaran["jumlah_tawaran"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Color.fromARGB(255, 53, 51, 51),
                   ),
@@ -162,32 +162,32 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                   keyboardType: TextInputType.number,
                   enableSuggestions: false,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
+                    contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Jumlah Tawaran Peminjaman",
                     prefixText: "Rp.",
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   readOnly: true,
                   controller: tglpengembalian
                     ..text = value.detailtawaran["tanggal_pengembalian"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Tenggat waktu peminjam membayarkan pinjaman",
@@ -196,17 +196,17 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   controller: denda..text = value.detailtawaran["denda"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Color.fromARGB(255, 53, 51, 51),
                   ),
@@ -217,19 +217,19 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                   enableSuggestions: false,
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
+                    contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Telat tenggat waktu ada denda?",
                     prefixText:
                         (denda.text.toString() != "0") ? "Ya" : "Tidak Ada",
                     suffixText:
                         (denda.text.toString() != "0") ? "% per hari" : "",
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
@@ -240,12 +240,12 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.red,
-                  minimumSize: const Size.fromHeight(50),
+                  minimumSize: Size.fromHeight(50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   "Ajukan Peminjaman ini",
                   style: TextStyle(
                     fontSize: 15,
@@ -253,7 +253,7 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
             ],
           ),
         ),
@@ -261,15 +261,15 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.black,
-        unselectedLabelStyle: const TextStyle(
+        unselectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        selectedLabelStyle: const TextStyle(
+        selectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,

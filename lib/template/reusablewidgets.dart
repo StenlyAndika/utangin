@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/auth.dart';
+import '../pages/home/user/data_rekening.dart';
 
 class ReusableWidgets {
   static bool isValidEmail(String email) {
@@ -21,14 +25,14 @@ class ReusableWidgets {
   static inputField(
       String lbl, TextEditingController ctrl, TextInputType keyb) {
     return Container(
-      padding: const EdgeInsets.only(left: 5),
+      padding: EdgeInsets.only(left: 5),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+        border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
         controller: ctrl,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           color: Colors.black,
         ),
@@ -37,11 +41,10 @@ class ReusableWidgets {
         keyboardType: keyb,
         enableSuggestions: false,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(5),
+          contentPadding: EdgeInsets.all(5),
           border: InputBorder.none,
           labelText: lbl,
-          labelStyle:
-              const TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
+          labelStyle: TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
         ),
       ),
     );
@@ -50,14 +53,14 @@ class ReusableWidgets {
   static inputReadOnlyField(
       String lbl, TextEditingController ctrl, TextInputType keyb) {
     return Container(
-      padding: const EdgeInsets.only(left: 5),
+      padding: EdgeInsets.only(left: 5),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+        border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
         controller: ctrl,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           color: Color.fromARGB(255, 53, 51, 51),
         ),
@@ -67,11 +70,10 @@ class ReusableWidgets {
         keyboardType: keyb,
         enableSuggestions: false,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(5),
+          contentPadding: EdgeInsets.all(5),
           border: InputBorder.none,
           labelText: lbl,
-          labelStyle:
-              const TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
+          labelStyle: TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
         ),
       ),
     );
@@ -82,10 +84,10 @@ class ReusableWidgets {
       centerTitle: true,
       title: Text(
         judul,
-        style: const TextStyle(color: Colors.black, fontSize: 16),
+        style: TextStyle(color: Colors.black, fontSize: 16),
       ),
       leading: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_back_ios,
           color: Colors.black,
         ),
@@ -102,11 +104,11 @@ class ReusableWidgets {
     return showDialog(
       context: context,
       builder: (BuildContext context) => AnimatedContainer(
-        duration: const Duration(milliseconds: 1500),
+        duration: Duration(milliseconds: 1500),
         child: AlertDialog(
           elevation: 0,
           backgroundColor: Colors.white.withOpacity(0.9),
-          shape: const RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(20.0),
             ),
@@ -119,8 +121,7 @@ class ReusableWidgets {
           content: Text(
             txt!,
             textAlign: TextAlign.center,
-            style:
-                const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
           ),
           actions: [
             ElevatedButton(
@@ -130,7 +131,7 @@ class ReusableWidgets {
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Lanjutkan',
                 style: TextStyle(
                   color: Colors.white,
@@ -144,17 +145,18 @@ class ReusableWidgets {
   }
 
   static menuPengaturan(context) {
+    final auth = Provider.of<AuthModel>(context, listen: false);
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
         return Container(
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
+          padding: EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
           alignment: Alignment.center,
           child: ListView(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     "U",
                     style: TextStyle(
@@ -172,8 +174,8 @@ class ReusableWidgets {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              const Text(
+              SizedBox(height: 10),
+              Text(
                 "Pengaturan",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -184,10 +186,27 @@ class ReusableWidgets {
               SizedBox(height: 10),
               Divider(),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed(DataRekening.nameRoute);
+                },
                 child: Text("Data Rekening"),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 40),
+                ),
+              ),
+              Divider(),
+              ElevatedButton(
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.clear();
+                  auth.logout(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size.fromHeight(40),
+                ),
+                child: Text(
+                  "Logout",
+                  style: TextStyle(fontSize: 15),
                 ),
               ),
               Divider(),
@@ -195,6 +214,15 @@ class ReusableWidgets {
           ),
         );
       },
+    );
+  }
+
+  static notificationMessage(context, message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(milliseconds: 1000),
+      ),
     );
   }
 }

@@ -5,7 +5,7 @@ import '../../../models/auth.dart';
 import '../../../template/reusablewidgets.dart';
 
 class FormLogin extends StatefulWidget {
-  const FormLogin({Key? key}) : super(key: key);
+  FormLogin({Key? key}) : super(key: key);
 
   static const nameRoute = '/pagelogin';
 
@@ -33,16 +33,16 @@ class _FormLoginState extends State<FormLogin> {
       extendBodyBehindAppBar: true,
       appBar: ReusableWidgets.backAppBar("Log in", context),
       body: Container(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+        padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
         child: ListView(
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
+                padding: EdgeInsets.only(left: 30, right: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       "U",
                       style: TextStyle(
@@ -61,21 +61,21 @@ class _FormLoginState extends State<FormLogin> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             ReusableWidgets.inputField(
                 "Email", email, TextInputType.emailAddress),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Container(
-              padding: const EdgeInsets.only(left: 5),
+              padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: const Color.fromARGB(255, 184, 174, 174)),
+                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
                 controller: password,
                 textCapitalization: TextCapitalization.none,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                 ),
@@ -84,7 +84,7 @@ class _FormLoginState extends State<FormLogin> {
                 obscureText: _isVisible,
                 enableSuggestions: false,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(5),
+                  contentPadding: EdgeInsets.all(5),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -92,12 +92,12 @@ class _FormLoginState extends State<FormLogin> {
                       });
                     },
                     icon: _isVisible
-                        ? const Icon(Icons.visibility_off)
-                        : const Icon(Icons.visibility),
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
                   ),
                   border: InputBorder.none,
                   labelText: "Password",
-                  labelStyle: const TextStyle(
+                  labelStyle: TextStyle(
                       color: Color.fromARGB(255, 110, 108, 108)),
                 ),
               ),
@@ -107,7 +107,7 @@ class _FormLoginState extends State<FormLogin> {
               children: [
                 TextButton(
                   onPressed: () {},
-                  child: const Text(
+                  child: Text(
                     "Lupa Password?",
                     style: TextStyle(
                       color: Colors.red,
@@ -121,7 +121,7 @@ class _FormLoginState extends State<FormLogin> {
                     Navigator.of(context)
                         .pushReplacementNamed(AuthPage.nameRoute);
                   },
-                  child: const Text(
+                  child: Text(
                     "Belum daftar?",
                     style: TextStyle(
                       color: Colors.red,
@@ -133,10 +133,10 @@ class _FormLoginState extends State<FormLogin> {
               ],
             ),
             Container(
-              padding: const EdgeInsets.only(left: 5, right: 5),
+              padding: EdgeInsets.only(left: 5, right: 5),
               child: Wrap(
                 children: [
-                  const InkWell(
+                  InkWell(
                     child: SizedBox(
                       height: 20,
                       child: Text(
@@ -151,7 +151,7 @@ class _FormLoginState extends State<FormLogin> {
                       Navigator.of(context)
                           .pushReplacementNamed(FormLogin.nameRoute);
                     },
-                    child: const SizedBox(
+                    child: SizedBox(
                       height: 20,
                       child: Text(
                         "Terms of Service",
@@ -160,7 +160,7 @@ class _FormLoginState extends State<FormLogin> {
                       ),
                     ),
                   ),
-                  const InkWell(
+                  InkWell(
                     child: SizedBox(
                       height: 20,
                       child: Text(
@@ -175,7 +175,7 @@ class _FormLoginState extends State<FormLogin> {
                       Navigator.of(context)
                           .pushReplacementNamed(FormLogin.nameRoute);
                     },
-                    child: const SizedBox(
+                    child: SizedBox(
                       height: 20,
                       child: Text(
                         "Privacy Policy",
@@ -192,12 +192,12 @@ class _FormLoginState extends State<FormLogin> {
                 login.login(email.text, password.text, context);
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
+                minimumSize: Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 "Log in",
                 style: TextStyle(fontSize: 15),
               ),

@@ -4,6 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../pages/home/lender/sukses_pelunasan_lender.dart';
+import '../pages/home/lender/detail_cicilan_lender.dart';
+import '../pages/home/lender/evaluasi_cicilan_lender.dart';
+import '../pages/home/lender/evaluasi_pembayaran.dart';
+import '../pages/home/borrower/sukses_pelunasan.dart';
+import '../pages/home/lender/evaluasi_pelunasan.dart';
+import '../pages/home/borrower/detail_cicilan.dart';
+import '../pages/home/user/form_rekening.dart';
+import '../pages/home/borrower/evaluasi_cicilan.dart';
+import '../pages/home/borrower/evaluasi_hutang.dart';
+import '../pages/home/user/data_rekening.dart';
 import '../pages/home/borrower/form_pengajuan_tawaran.dart';
 import '../pages/home/borrower/tawaran_pinjaman.dart';
 import '../pages/home/borrower/evaluasi_tawaran.dart';
@@ -29,11 +40,13 @@ import '../pages/home/borrower/sukses_pengajuan.dart';
 import '../pages/auth/form_login.dart';
 import '../models/pengajuan.dart';
 import '../models/evaluasi_tawaran_model.dart';
+import '../models/user.dart';
+import '../models/evaluasi_hutang_model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyHttpOverrides extends HttpOverrides {
@@ -71,6 +84,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PengajuanModel()),
         ChangeNotifierProvider(create: (context) => EvaluasiPinjamanModel()),
         ChangeNotifierProvider(create: (context) => EvaluasiTawaranModel()),
+        ChangeNotifierProvider(create: (context) => EvaluasiHutangModel()),
+        ChangeNotifierProvider(create: (context) => UserModel()),
       ],
       child: GestureDetector(
         onTap: () {
@@ -81,7 +96,7 @@ class MyApp extends StatelessWidget {
           title: 'Utangin',
           theme: ThemeData(
             primarySwatch: Colors.red,
-            appBarTheme: const AppBarTheme(
+            appBarTheme: AppBarTheme(
               color: Color.fromARGB(250, 250, 250, 250),
             ),
           ),
@@ -89,50 +104,59 @@ class MyApp extends StatelessWidget {
             future: getsession(),
             builder: (BuildContext context, snapshot) {
               if (snapshot.data == true) {
-                return const MenuLogin();
+                return MenuLogin();
               } else {
-                return const MyHomePage();
+                return MyHomePage();
               }
             },
           ),
           routes: {
             // Landing
-            MyHomePage.nameRoute: (context) => const MyHomePage(),
+            MyHomePage.nameRoute: (context) => MyHomePage(),
 
             // auth>daftar>login
-            AuthPage.nameRoute: (context) => const AuthPage(),
-            FormDaftar.nameRoute: (context) => const FormDaftar(),
-            FormLogin.nameRoute: (context) => const FormLogin(),
-            NotifSuksesDaftar.nameRoute: (context) => const NotifSuksesDaftar(),
+            AuthPage.nameRoute: (context) => AuthPage(),
+            FormDaftar.nameRoute: (context) => FormDaftar(),
+            FormLogin.nameRoute: (context) => FormLogin(),
+            NotifSuksesDaftar.nameRoute: (context) => NotifSuksesDaftar(),
 
             // menu login
-            MenuLogin.nameRoute: (context) => const MenuLogin(),
+            MenuLogin.nameRoute: (context) => MenuLogin(),
+
+            //user
+            DataRekening.nameRoute: (context) => DataRekening(),
+            FormRekening.nameRoute: (context) => FormRekening(),
 
             // fitur borrower
-            MenuBorrower.nameRoute: (context) => const MenuBorrower(),
-            FormPengajuan.nameRoute: (context) => const FormPengajuan(),
-            NotifSuksesPengajuan.nameRoute: (context) =>
-                const NotifSuksesPengajuan(),
-
-            EvaluasiTawaran.nameRoute: (context) => const EvaluasiTawaran(),
-            TawaranPinjaman.nameRoute: (context) => const TawaranPinjaman(),
-            FormPengajuanTawaran.nameRoute: (context) =>
-                const FormPengajuanTawaran(),
+            MenuBorrower.nameRoute: (context) => MenuBorrower(),
+            FormPengajuan.nameRoute: (context) => FormPengajuan(),
+            NotifSuksesPengajuan.nameRoute: (context) => NotifSuksesPengajuan(),
+            EvaluasiTawaran.nameRoute: (context) => EvaluasiTawaran(),
+            TawaranPinjaman.nameRoute: (context) => TawaranPinjaman(),
+            FormPengajuanTawaran.nameRoute: (context) => FormPengajuanTawaran(),
+            EvaluasiHutang.nameRoute: (context) => EvaluasiHutang(),
+            EvaluasiCicilan.nameRoute: (context) => EvaluasiCicilan(),
+            DetailCicilan.nameRoute: (context) => DetailCicilan(),
+            NotifSuksesPelunasan.nameRoute: (context) => NotifSuksesPelunasan(),
 
             // fitur lender
-            MenuLender.nameRoute: (context) => const MenuLender(),
-            TawarkanPinjaman.nameRoute: (context) => const TawarkanPinjaman(),
+            MenuLender.nameRoute: (context) => MenuLender(),
+            TawarkanPinjaman.nameRoute: (context) => TawarkanPinjaman(),
             NotifTawaranPeminjaman.nameRoute: (context) =>
-                const NotifTawaranPeminjaman(),
-
-            EvaluasiPinjaman.nameRoute: (context) => const EvaluasiPinjaman(),
-            DetailPermohonan.nameRoute: (context) => const DetailPermohonan(),
+                NotifTawaranPeminjaman(),
+            EvaluasiPinjaman.nameRoute: (context) => EvaluasiPinjaman(),
+            DetailPermohonan.nameRoute: (context) => DetailPermohonan(),
             UploadBuktiPeminjaman.nameRoute: (context) =>
-                const UploadBuktiPeminjaman(),
+                UploadBuktiPeminjaman(),
             NotifPeminjamanTerdokumentasi.nameRoute: (context) =>
-                const NotifPeminjamanTerdokumentasi(),
-            RevisiPinjaman.nameRoute: (context) => const RevisiPinjaman(),
-            NotifSuksesRevisi.nameRoute: (context) => const NotifSuksesRevisi(),
+                NotifPeminjamanTerdokumentasi(),
+            RevisiPinjaman.nameRoute: (context) => RevisiPinjaman(),
+            NotifSuksesRevisi.nameRoute: (context) => NotifSuksesRevisi(),
+            EvaluasiPelunasan.nameRoute: (context) => EvaluasiPelunasan(),
+            EvaluasiPembayaran.nameRoute: (context) => EvaluasiPembayaran(),
+            EvaluasiCicilanLender.nameRoute: (context) => EvaluasiCicilanLender(),
+            DetailCicilanLender.nameRoute: (context) => DetailCicilanLender(),
+            NotifSuksesPelunasanLender.nameRoute: (context) => NotifSuksesPelunasanLender(),
           },
           onGenerateRoute: (settings) {
             if (settings.name == PassArgumentsScreen.routeName) {
@@ -160,7 +184,7 @@ class PassArgumentsScreen extends StatelessWidget {
   final String title;
   final String message;
 
-  const PassArgumentsScreen({
+  PassArgumentsScreen({
     Key? key,
     required this.title,
     required this.message,

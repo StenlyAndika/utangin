@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:utangin/pages/home/lender/evaluasi_pinjaman.dart';
 
 class NotifSuksesRevisi extends StatelessWidget {
-  const NotifSuksesRevisi({Key? key}) : super(key: key);
+  NotifSuksesRevisi({Key? key}) : super(key: key);
 
   static const nameRoute = '/pagesuksesrevisi';
 
@@ -12,7 +12,7 @@ class NotifSuksesRevisi extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
@@ -40,7 +40,7 @@ class NotifSuksesRevisi extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "Selamat",
                         style: TextStyle(
@@ -55,7 +55,7 @@ class NotifSuksesRevisi extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
+                  Text(
                     "Revisimu telah kami kirimkan",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -64,10 +64,10 @@ class NotifSuksesRevisi extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
-                  const Text(
+                  Text(
                     "Cek riwayat peminjamanmu untuk mengetahui kondisi terbaru atas peminjamanmu.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -75,12 +75,12 @@ class NotifSuksesRevisi extends StatelessWidget {
                       fontSize: 15,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "U",
                         style: TextStyle(
@@ -97,7 +97,7 @@ class NotifSuksesRevisi extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
                   ElevatedButton(
@@ -107,17 +107,17 @@ class NotifSuksesRevisi extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.red,
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Kembali Ke Beranda",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 100,
                   ),
                 ],

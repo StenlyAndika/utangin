@@ -8,7 +8,7 @@ import '../../../models/evaluasi_pinjaman_model.dart';
 import '../../../template/reusablewidgets.dart';
 
 class UploadBuktiPeminjaman extends StatefulWidget {
-  const UploadBuktiPeminjaman({Key? key}) : super(key: key);
+  UploadBuktiPeminjaman({Key? key}) : super(key: key);
 
   static const nameRoute = '/pageuploadbuktipeminjaman';
 
@@ -24,7 +24,7 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
       context: context,
       builder: (BuildContext bc) {
         return Container(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           height: 120,
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -33,7 +33,7 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.folder),
+                  icon: Icon(Icons.folder),
                   onPressed: () {
                     Navigator.of(context).pop();
                     ReusableWidgets.openGallery(stat).then((pickedImage) {
@@ -44,7 +44,7 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                       }
                     });
                   },
-                  label: const Text(
+                  label: Text(
                     "Gallery",
                     style: TextStyle(fontSize: 15),
                   ),
@@ -56,11 +56,11 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                     ),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 10,
                 ),
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.camera),
+                  icon: Icon(Icons.camera),
                   onPressed: () {
                     Navigator.of(context).pop();
                     ReusableWidgets.openCamera(stat).then((pickedImage) {
@@ -71,7 +71,7 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                       }
                     });
                   },
-                  label: const Text(
+                  label: Text(
                     "Kamera",
                     style: TextStyle(fontSize: 15),
                   ),
@@ -122,10 +122,10 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 30, right: 30),
+                    padding: EdgeInsets.only(left: 30, right: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
                           "U",
                           style: TextStyle(
@@ -149,7 +149,7 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child: const Text(
+                  child: Text(
                     "Bukti Peminjaman",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
@@ -161,7 +161,7 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                 SizedBox(
                   width: 200,
                   height: 100,
-                  child: _bukti == null ? const Text("") : Image.file(_bukti!),
+                  child: _bukti == null ? Text("") : Image.file(_bukti!),
                 ),
                 SizedBox(height: 5),
                 ElevatedButton(
@@ -170,12 +170,12 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Color.fromARGB(255, 112, 110, 110),
-                    minimumSize: const Size.fromHeight(50),
+                    minimumSize: Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Upload Bukti Peminjaman",
                     style: TextStyle(fontSize: 15),
                   ),
@@ -194,12 +194,12 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
                     config.konfirmasi(idp, _bukti, context);
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
+                    minimumSize: Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Kirim",
                     style: TextStyle(fontSize: 15),
                   ),

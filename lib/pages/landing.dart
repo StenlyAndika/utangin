@@ -3,7 +3,7 @@ import 'auth/authentication.dart';
 import 'auth/form_login.dart';
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
 
   static const nameRoute = '/page5';
 
@@ -30,7 +30,7 @@ class MyHomePage extends StatelessWidget {
                     SizedBox(height: MediaQuery.of(context).size.height * 0.2),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.8,
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.only(
                             left: 30, top: 10, right: 10, bottom: 10),
                         child: Text(
@@ -50,18 +50,18 @@ class MyHomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 30, right: 30),
+                        padding: EdgeInsets.only(left: 30, right: 30),
                         child: Container(
                           color: Colors.red,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Text(
                                 "U",
                                 style: TextStyle(
@@ -81,11 +81,11 @@ class MyHomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: EdgeInsets.all(10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -102,14 +102,14 @@ class MyHomePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 "DAFTAR",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context)
@@ -123,7 +123,7 @@ class MyHomePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 "LOG IN",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(

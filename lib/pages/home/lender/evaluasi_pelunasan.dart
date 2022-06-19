@@ -2,23 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../pages/home/borrower/menu_borrower.dart';
-import '../../../pages/home/borrower/tawaran_pinjaman.dart';
-import '../../../models/evaluasi_tawaran_model.dart';
+import 'package:utangin/pages/home/lender/evaluasi_cicilan_lender.dart';
+import '../../../models/evaluasi_hutang_model.dart';
+import '../../../models/evaluasi_pinjaman_model.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
-import '../lender/menu_lender.dart';
+import '../borrower/menu_borrower.dart';
+import 'menu_lender.dart';
 
-class EvaluasiTawaran extends StatefulWidget {
-  EvaluasiTawaran({Key? key}) : super(key: key);
+class EvaluasiPelunasan extends StatefulWidget {
+  EvaluasiPelunasan({Key? key}) : super(key: key);
 
-  static const nameRoute = '/pageevaluasitawarankesaya';
+  static const nameRoute = '/pageEvaluasiPelunasan';
 
   @override
-  State<EvaluasiTawaran> createState() => _EvaluasiTawaranState();
+  State<EvaluasiPelunasan> createState() => _EvaluasiPelunasanState();
 }
 
-class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
+class _EvaluasiPelunasanState extends State<EvaluasiPelunasan> {
   String? menu;
   int selected = 1;
 
@@ -48,33 +49,33 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
     }
   }
 
-  getListTawaran() async {
-    final session = Provider.of<EvaluasiTawaranModel>(context, listen: false);
+  getListPinjaman() async {
+    final session = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? ktp = await prefs.getString("ktp");
-    session.getListTawaran(ktp!);
+    session.getListPinjaman(ktp!);
   }
 
   @override
   void initState() {
     getMenu();
-    getListTawaran();
+    getListPinjaman();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final config = Provider.of<EvaluasiHutangModel>(context, listen: false);
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.18),
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.22),
         child: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
           flexibleSpace: Container(
-            padding:
-                EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
+            padding: EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
             alignment: Alignment.center,
             child: ListView(
               children: [
@@ -100,7 +101,7 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Tawaran Pinjaman",
+                  "Konfirmasi Pelunasan Pinjaman",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.black,
@@ -122,7 +123,7 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
                       Container(
                         width: width * 0.33,
                         child: Text(
-                          "Nama Lender",
+                          "Nama Peminjam",
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
@@ -154,96 +155,100 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiTawaranModel>(
+            Consumer<EvaluasiPinjamanModel>(
               builder: (context, value, child) => Column(
                 children: [
-                  for (var i = 0; i < value.datatawaran.length; i++) ...[
-                    Wrap(
-                      children: [
-                        Container(
-                          width: width * 0.2,
-                          child: Text(
-                            DateFormat('d-MM-yyyy').format(DateTime.parse(
-                                value.datatawaran[i]["tanggal_diajukan"])),
-                            style: TextStyle(fontSize: 11),
-                          ),
-                        ),
-                        Container(
-                          width: width * 0.33,
-                          child: Text(
-                            value.datatawaran[i]["nama_lender"],
-                            style: TextStyle(fontSize: 11),
-                          ),
-                        ),
-                        Container(
-                          width: width * 0.22,
-                          child: Text(
-                            "Rp." + value.datatawaran[i]["jumlah_tawaran"],
-                            style: TextStyle(fontSize: 11),
-                          ),
-                        ),
-                        if (value.datatawaran[i]["status"] == "0") ...[
+                  for (var i = 0; i < value.datapinjaman.length; i++) ...[
+                    if (value.datapinjaman[i]["status"] != "X") ...[
+                      Wrap(
+                        children: [
                           Container(
                             width: width * 0.2,
-                            padding: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              "Penawaran",
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              DateFormat('dd-MM-yyyy').format(DateTime.parse(
+                                  value.datapinjaman[i]["tanggal_pengajuan"])),
+                              style: TextStyle(fontSize: 11),
                             ),
                           ),
-                        ] else ...[
                           Container(
-                            width: width * 0.2,
-                            padding: EdgeInsets.only(bottom: 5),
+                            width: width * 0.33,
                             child: Text(
-                              "Diterima",
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              value.datapinjaman[i]["nama_borrower"],
+                              style: TextStyle(fontSize: 11),
                             ),
                           ),
-                        ]
-                      ],
-                    ),
-                    Wrap(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            if (value.datatawaran[i]["status"] == "0") {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              await prefs.setString(
-                                  'idp', value.datatawaran[i]["id_penawaran"]);
-                              Navigator.of(context)
-                                  .pushNamed(TawaranPinjaman.nameRoute);
-                            } else {
-                              null;
-                            }
+                          Container(
+                            width: width * 0.22,
+                            child: Text(
+                              "Rp." + value.datapinjaman[i]["jumlah"],
+                              style: TextStyle(fontSize: 11),
+                            ),
+                          ),
+                          if (value.datapinjaman[i]["status"] == "0") ...[
+                            Container(
+                              width: width * 0.2,
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "Belum Lunas",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.yellow,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ] else ...[
+                            Container(
+                              width: width * 0.2,
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "Lunas",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ]
+                        ],
+                      ),
+                      Container(
+                        width: width,
+                        height: 40,
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            config
+                                .cariIDTransaksi(
+                                    value.datapinjaman[i]["id_permohonan"])
+                                .then(
+                              (value) async {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString(
+                                    "id_transaksi", value.toString());
+                              },
+                            );
+                            Navigator.of(context)
+                                .pushNamed(EvaluasiCicilanLender.nameRoute);
                           },
-                          child: Container(
-                            padding: EdgeInsets.only(left: 70),
-                            width: width,
-                            height: 40,
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Lihat Detail",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue,
-                              ),
+                          child: Text(
+                            "Konfirmasi Pembayaran",
+                            style: TextStyle(fontSize: 11, color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.cyan,
+                            fixedSize: Size(100, 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Divider(),
-                  ]
+                      ),
+                      Divider(),
+                    ],
+                  ],
                 ],
               ),
             ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:utangin/pages/home/borrower/menu_borrower.dart';
 
 class NotifSuksesPengajuan extends StatelessWidget {
-  const NotifSuksesPengajuan({Key? key}) : super(key: key);
+  NotifSuksesPengajuan({Key? key}) : super(key: key);
 
   static const nameRoute = '/page11';
 
@@ -12,7 +12,7 @@ class NotifSuksesPengajuan extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
@@ -39,7 +39,7 @@ class NotifSuksesPengajuan extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "Selamat",
                         style: TextStyle(
@@ -54,7 +54,7 @@ class NotifSuksesPengajuan extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
+                  Text(
                     "pinjamanmu telah diajukan",
                     style: TextStyle(
                       color: Colors.black,
@@ -62,10 +62,10 @@ class NotifSuksesPengajuan extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
-                  const Text(
+                  Text(
                     "Peminjam (lender) akan mengevaluasi berkas pinjamanmu & mengkonfirmasi pinjamanmu jika telah mengupload bukti transfer ke rekeningmu.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -73,12 +73,12 @@ class NotifSuksesPengajuan extends StatelessWidget {
                       fontSize: 15,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "U",
                         style: TextStyle(
@@ -95,29 +95,29 @@ class NotifSuksesPengajuan extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context)
                             .pushReplacementNamed(MenuBorrower.nameRoute);
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(40),
+                        minimumSize: Size.fromHeight(40),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Kembali Ke Beranda",
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 100,
                   ),
                 ],

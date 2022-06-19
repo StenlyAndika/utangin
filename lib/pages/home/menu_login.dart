@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utangin/pages/home/lender/menu_lender.dart';
 import '../../pages/home/borrower/menu_borrower.dart';
-import '../../models/auth.dart';
 
 class MenuLogin extends StatefulWidget {
-  const MenuLogin({Key? key}) : super(key: key);
+  MenuLogin({Key? key}) : super(key: key);
 
   static const nameRoute = '/pagemenulogin';
 
@@ -22,7 +20,6 @@ class _MenuLoginState extends State<MenuLogin> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthModel>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -46,10 +43,10 @@ class _MenuLoginState extends State<MenuLogin> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 30, right: 30),
+                    padding: EdgeInsets.only(left: 30, right: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
                           "U",
                           style: TextStyle(
@@ -73,7 +70,7 @@ class _MenuLoginState extends State<MenuLogin> {
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child: const Text(
+                  child: Text(
                     "Masuk Sebagai",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
@@ -90,12 +87,12 @@ class _MenuLoginState extends State<MenuLogin> {
                         .pushReplacementNamed(MenuLender.nameRoute);
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
+                    minimumSize: Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Pemberi Pinjaman (lender)",
                     style: TextStyle(fontSize: 15),
                   ),
@@ -111,35 +108,18 @@ class _MenuLoginState extends State<MenuLogin> {
                         .pushReplacementNamed(MenuBorrower.nameRoute);
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
+                    minimumSize: Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Peminjam (borrower)",
                     style: TextStyle(fontSize: 15),
                   ),
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.04,
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.clear();
-                    auth.logout(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    "Logout",
-                    style: TextStyle(fontSize: 15),
-                  ),
                 ),
               ],
             ),

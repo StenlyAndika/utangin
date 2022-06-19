@@ -9,7 +9,7 @@ import '../menu_login.dart';
 import 'menu_lender.dart';
 
 class RevisiPinjaman extends StatefulWidget {
-  const RevisiPinjaman({Key? key}) : super(key: key);
+  RevisiPinjaman({Key? key}) : super(key: key);
 
   static const nameRoute = '/pageRevisiPinjaman';
 
@@ -92,13 +92,13 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
       body: Consumer<EvaluasiPinjamanModel>(
         builder: (context, value, child) => Container(
           padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+              EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           alignment: Alignment.center,
           child: ListView(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     "U",
                     style: TextStyle(
@@ -116,7 +116,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   ),
                 ],
               ),
-              const Text(
+              Text(
                 "Revisi Peminjaman",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -124,17 +124,17 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                     fontSize: 22,
                     fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               ReusableWidgets.inputReadOnlyField(
                   "Email Peminjam*",
                   emailpeminjam..text = value.detailpinjaman["email"],
                   TextInputType.emailAddress),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               ReusableWidgets.inputReadOnlyField(
                   "Nama Lengkap*",
                   namapeminjam..text = value.detailpinjaman["nama"],
                   TextInputType.text),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               ReusableWidgets.inputReadOnlyField(
                   "Tanggal Pengajuan Pinjaman*",
                   namapeminjam
@@ -142,17 +142,17 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                       DateTime.parse(value.detailpinjaman["tanggal_pengajuan"]),
                     ),
                   TextInputType.text),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   controller: jumlah..text = value.detailpinjaman["jumlah"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -161,16 +161,16 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   keyboardType: TextInputType.number,
                   enableSuggestions: false,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
+                    contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Jumlah Pinjaman",
                     prefixText: "Rp.",
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               ReusableWidgets.inputReadOnlyField(
                   "Kirim ke rekening*",
                   norek
@@ -179,17 +179,17 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                         value.detailpinjaman["bank"] +
                         ")",
                   TextInputType.emailAddress),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               ReusableWidgets.inputReadOnlyField(
                   "Kegunaan peminjaman*",
                   kegunaan..text = value.detailpinjaman["kegunaan"],
                   TextInputType.emailAddress),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -199,11 +199,11 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                       DateTime.parse(
                           value.detailpinjaman["tanggal_pengembalian"]),
                     ),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Tanggal pengembalian oleh peminjam",
@@ -227,17 +227,17 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   },
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   controller: termin..text = value.detailpinjaman["termin"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -247,26 +247,26 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   enableSuggestions: false,
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
+                    contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Termin Pembayaran",
                     suffixText: "x Cicilan",
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   controller: denda..text = value.detailpinjaman["denda"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -276,7 +276,7 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   enableSuggestions: false,
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
+                    contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Telat tenggat waktu ada denda?",
                     prefixText:
@@ -287,23 +287,23 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                         (value.detailpinjaman["denda"].toString() != "0")
                             ? "% per hari"
                             : "",
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                         color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: const Color.fromARGB(255, 184, 174, 174)),
+                      color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
                   controller: ket_revisi,
                   maxLines: 6,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -312,13 +312,13 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                   keyboardType: TextInputType.multiline,
                   enableSuggestions: false,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(5),
+                    contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Tulis revisimu...",
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               ElevatedButton(
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
@@ -336,12 +336,12 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.red,
-                  minimumSize: const Size.fromHeight(50),
+                  minimumSize: Size.fromHeight(50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   "Kirim",
                   style: TextStyle(
                     fontSize: 15,
@@ -357,15 +357,15 @@ class _RevisiPinjamanState extends State<RevisiPinjaman> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.black,
-        unselectedLabelStyle: const TextStyle(
+        unselectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        selectedLabelStyle: const TextStyle(
+        selectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NotifTawaranPeminjaman extends StatelessWidget {
-  const NotifTawaranPeminjaman({Key? key}) : super(key: key);
+  NotifTawaranPeminjaman({Key? key}) : super(key: key);
 
   static const nameRoute = '/page20';
 
@@ -11,7 +11,7 @@ class NotifTawaranPeminjaman extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
@@ -38,7 +38,7 @@ class NotifTawaranPeminjaman extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "Selamat",
                         style: TextStyle(
@@ -53,7 +53,7 @@ class NotifTawaranPeminjaman extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
+                  Text(
                     "tawaran peminjamanmu telah kami kirimkan",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -62,10 +62,10 @@ class NotifTawaranPeminjaman extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 30,
                   ),
-                  const Text(
+                  Text(
                     "Peminjam (borrower) akan mengecek tawaran peminjamanmu & mengkonfirmasikannya melalui tindakan ajukan pinjaman. Tawaran ajukan pinjaman akan dikirim ke kamu untuk kamu evaluasi dan konfirmasi.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -73,12 +73,12 @@ class NotifTawaranPeminjaman extends StatelessWidget {
                       fontSize: 15,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "U",
                         style: TextStyle(
@@ -95,28 +95,28 @@ class NotifTawaranPeminjaman extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(40),
+                        minimumSize: Size.fromHeight(40),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Kembali Ke Beranda",
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 100,
                   ),
                 ],

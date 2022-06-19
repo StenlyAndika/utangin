@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/template/reusablewidgets.dart';
+import 'package:utangin/pages/home/lender/evaluasi_pelunasan.dart';
+import '../../../template/reusablewidgets.dart';
 import '../../../pages/home/lender/evaluasi_pinjaman.dart';
 import '../../../pages/home/lender/tawarkan_pinjaman.dart';
 
@@ -13,7 +12,7 @@ import '../borrower/menu_borrower.dart';
 import '../menu_login.dart';
 
 class MenuLender extends StatefulWidget {
-  const MenuLender({Key? key}) : super(key: key);
+  MenuLender({Key? key}) : super(key: key);
 
   static const nameRoute = '/pagemenublender';
 
@@ -70,7 +69,7 @@ class _MenuLenderState extends State<MenuLender> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Container(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
         alignment: Alignment.center,
         child: ListView(
           children: [
@@ -144,9 +143,8 @@ class _MenuLenderState extends State<MenuLender> {
                   height: MediaQuery.of(context).size.height * 0.15,
                   autoPlay: true),
               items: [
-                Random().nextInt(50),
-                Random().nextInt(50),
-                Random().nextInt(50)
+                "img/primary-background.jpg",
+                "img/secondary-background.jpg"
               ].map((i) {
                 return Builder(
                   builder: (BuildContext context) {
@@ -155,9 +153,9 @@ class _MenuLenderState extends State<MenuLender> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                         child: Stack(
-                          children: <Widget>[
-                            Image.network(
-                              "https://picsum.photos/id/$i/200",
+                          children: [
+                            Image.asset(
+                              i.toString(),
                               fit: BoxFit.cover,
                               width: double.infinity,
                             ),
@@ -171,11 +169,11 @@ class _MenuLenderState extends State<MenuLender> {
             ),
             SizedBox(height: 10),
             ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.3,
                 width: double.infinity,
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomLeft,
@@ -201,7 +199,7 @@ class _MenuLenderState extends State<MenuLender> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      "Rp.750.000",
+                      "asd",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -383,7 +381,10 @@ class _MenuLenderState extends State<MenuLender> {
                         minWidth: 200.0,
                         height: 200.0,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(EvaluasiPelunasan.nameRoute);
+                          },
                           child: Icon(
                             Icons.waving_hand,
                             size: 30,
@@ -413,15 +414,15 @@ class _MenuLenderState extends State<MenuLender> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.black,
-        unselectedLabelStyle: const TextStyle(
+        unselectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        selectedLabelStyle: const TextStyle(
+        selectedLabelStyle: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,

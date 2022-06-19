@@ -58,8 +58,8 @@ class PengajuanModel with ChangeNotifier {
           "termin": termin,
           "denda": denda,
         },
-      ).timeout(const Duration(seconds: 10));
-      
+      ).timeout(Duration(seconds: 10));
+
       if (hasilResponse.statusCode == 200) {
         pd.close();
         notifyListeners();
