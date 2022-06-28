@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
@@ -14,7 +13,7 @@ import '../pages/home/menu_login.dart';
 import '../pages/landing.dart';
 import '../template/reusablewidgets.dart';
 
-class AuthModel with ChangeNotifier {
+class AuthServices with ChangeNotifier {
   Map<dynamic, dynamic> _getlogin = {};
   Map<dynamic, dynamic> get data => _getlogin;
 
@@ -27,7 +26,7 @@ class AuthModel with ChangeNotifier {
   String _verifotp = "";
   String get verifotp => _verifotp;
 
-  var url = "http://10.0.2.2/Utangin_API";
+  var url = "http://apiutangin.hendrikofirman.com";
   var endpoint_cek_email = "No_login/Cek_email";
   var endpoint_send_otp = "No_login/Kirim_otp";
   var endpoint_cek_ktp = "No_login/Cek_ktp";
@@ -37,28 +36,42 @@ class AuthModel with ChangeNotifier {
   var endpoint_logout = "User/Logout";
 
   checkEmail(String email) async {
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_cek_email?email=$email"));
-    _emailterdaftar = await json.decode(hasilResponse.body)["status"];
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _emailterdaftar = "";
+    } else {
+      notifyListeners();
+      _emailterdaftar = await json.decode(response.body)["status"];
+    }
   }
 
   kirimOTP(String email) async {
-    var hasilResponse = await http.post(
+    var response = await http.post(
       Uri.parse("$url/$endpoint_send_otp"),
       body: {
         "email": email,
       },
     );
-    _verifotp = await json.decode(hasilResponse.body)["otp"];
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _verifotp = "";
+    } else {
+      notifyListeners();
+      _verifotp = await json.decode(response.body)["otp"];
+    }
   }
 
   checkKtp(String ktp) async {
-    var hasilResponse =
-        await http.get(Uri.parse("$url/$endpoint_cek_ktp?ktp=$ktp"));
-    _ktpterdaftar = await json.decode(hasilResponse.body)["status"];
-    notifyListeners();
+    var response = await http.get(Uri.parse("$url/$endpoint_cek_ktp?ktp=$ktp"));
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _ktpterdaftar = "";
+    } else {
+      notifyListeners();
+      _ktpterdaftar = await json.decode(response.body)["status"];
+    }
   }
 
   //daftar
@@ -72,6 +85,7 @@ class AuthModel with ChangeNotifier {
     npwp,
     alamat,
     rt,
+    rw,
     provinsi,
     pendidikan,
     pekerjaan,
@@ -98,6 +112,7 @@ class AuthModel with ChangeNotifier {
       request.fields["jk"] = jk;
       request.fields["npwp"] = npwp;
       request.fields["rt"] = rt;
+      request.fields["rw"] = rw;
       request.files.add(
         http.MultipartFile(
           "foto_ktp",
@@ -125,6 +140,7 @@ class AuthModel with ChangeNotifier {
       var response = await request.send();
       final respStr = await response.stream.bytesToString();
       var msg = json.decode(respStr);
+
       if (response.statusCode == 200) {
         notifyListeners();
         Navigator.of(context).pushReplacementNamed(NotifSuksesDaftar.nameRoute);
@@ -148,56 +164,19 @@ class AuthModel with ChangeNotifier {
     }
   }
 
-  Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
-    return <String, dynamic>{
-      'version.securityPatch': build.version.securityPatch,
-      'version.sdkInt': build.version.sdkInt,
-      'version.release': build.version.release,
-      'version.previewSdkInt': build.version.previewSdkInt,
-      'version.incremental': build.version.incremental,
-      'version.codename': build.version.codename,
-      'version.baseOS': build.version.baseOS,
-      'board': build.board,
-      'bootloader': build.bootloader,
-      'brand': build.brand,
-      'device': build.device,
-      'display': build.display,
-      'fingerprint': build.fingerprint,
-      'hardware': build.hardware,
-      'host': build.host,
-      'id': build.id,
-      'manufacturer': build.manufacturer,
-      'model': build.model,
-      'product': build.product,
-      'supported32BitAbis': build.supported32BitAbis,
-      'supported64BitAbis': build.supported64BitAbis,
-      'supportedAbis': build.supportedAbis,
-      'tags': build.tags,
-      'type': build.type,
-      'isPhysicalDevice': build.isPhysicalDevice,
-      'androidId': build.androidId,
-      'systemFeatures': build.systemFeatures,
-    };
-  }
-
   login(String email, String password, context) async {
     ProgressDialog pd = ProgressDialog(context: context);
     pd.show(max: -1, msg: "Mohon tunggu...");
 
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    Map<String, dynamic> _deviceData = <String, dynamic>{};
-    _deviceData = _readAndroidBuildData(await deviceInfo.androidInfo);
-
-    var hasilResponse = await http.post(
+    var response = await http.post(
       Uri.parse("$url/$endpoint_login"),
       body: {
         "email": email,
         "password": password,
-        "id_device": _deviceData["androidId"],
       },
     );
 
-    _getlogin = await json.decode(hasilResponse.body);
+    _getlogin = await json.decode(response.body);
     if (_getlogin["status"] == "1") {
       notifyListeners();
       pd.close();
@@ -221,22 +200,6 @@ class AuthModel with ChangeNotifier {
   }
 
   logout(context) async {
-    // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    // Map<String, dynamic> _deviceData = <String, dynamic>{};
-    // _deviceData = _readAndroidBuildData(await deviceInfo.androidInfo);
-    // var deviceId = _deviceData["androidId"];
-    // var hasilResponse = await http.get(
-    //   Uri.parse("$url/$endpoint_logout/$deviceId"),
-    // );
-    // print(hasilResponse.body);
-    // print(hasilResponse.statusCode);
-    // if (hasilResponse.statusCode == 200) {
-    //   final prefs = await SharedPreferences.getInstance();
-    //   await prefs.remove('status');
-    //   await prefs.remove('ktp');
-    //   Navigator.of(context).pushReplacementNamed(MyHomePage.nameRoute);
-    // }
-
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('status');
     await prefs.remove('ktp');

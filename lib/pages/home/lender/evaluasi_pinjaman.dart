@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../models/evaluasi_pinjaman_model.dart';
+import '../../../services/evaluasi_pinjaman_services.dart';
 import '../../../pages/home/lender/detail_permohonan.dart';
-import '../../../pages/home/lender/upload__bukti_peminjaman.dart';
+import 'upload_bukti_peminjaman.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -49,18 +49,18 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
     }
   }
 
-  getListPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? ktp = await prefs.getString("ktp");
-    session.getListPinjaman(ktp!);
-  }
-
   @override
   void initState() {
     getMenu();
     getListPinjaman();
     super.initState();
+  }
+
+  getListPinjaman() async {
+    final session = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    await session.getListPinjaman(ktp!);
   }
 
   @override
@@ -155,7 +155,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiPinjamanModel>(
+            Consumer<EvaluasiPinjamanServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.datapinjaman.length; i++) ...[
@@ -204,7 +204,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                               "Dipinjamkan",
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.yellow,
+                                color: Color.fromARGB(255, 94, 89, 89),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

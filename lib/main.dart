@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/home/lender/sukses_pelunasan_lender.dart';
@@ -24,11 +25,11 @@ import '../pages/home/lender/sukses_revisi.dart';
 import '../pages/home/lender/tawarkan_pinjaman.dart';
 import '../pages/home/lender/detail_permohonan.dart';
 import '../pages/home/lender/sukses_konfirmasi.dart';
-import '../pages/home/lender/upload__bukti_peminjaman.dart';
-import '../models/evaluasi_pinjaman_model.dart';
+import 'pages/home/lender/upload_bukti_peminjaman.dart';
+import 'services/evaluasi_pinjaman_services.dart';
 import '../pages/home/lender/evaluasi_pinjaman.dart';
 import '../pages/home/lender/menu_lender.dart';
-import '../models/auth.dart';
+import '../services/auth.dart';
 import '../pages/home/borrower/form_pengajuan.dart';
 import '../pages/home/borrower/menu_borrower.dart';
 import '../pages/home/menu_login.dart';
@@ -38,10 +39,10 @@ import '../pages/auth/sukses_daftar.dart';
 import '../pages/landing.dart';
 import '../pages/home/borrower/sukses_pengajuan.dart';
 import '../pages/auth/form_login.dart';
-import '../models/pengajuan.dart';
-import '../models/evaluasi_tawaran_model.dart';
-import '../models/user.dart';
-import '../models/evaluasi_hutang_model.dart';
+import '../services/pengajuan.dart';
+import 'services/evaluasi_tawaran_services.dart';
+import '../services/user.dart';
+import 'services/evaluasi_hutang_services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,18 +81,26 @@ class MyApp extends StatelessWidget {
     // HttpOverrides.global = MyHttpOverrides();
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthModel()),
-        ChangeNotifierProvider(create: (context) => PengajuanModel()),
-        ChangeNotifierProvider(create: (context) => EvaluasiPinjamanModel()),
-        ChangeNotifierProvider(create: (context) => EvaluasiTawaranModel()),
-        ChangeNotifierProvider(create: (context) => EvaluasiHutangModel()),
-        ChangeNotifierProvider(create: (context) => UserModel()),
+        ChangeNotifierProvider(create: (context) => AuthServices()),
+        ChangeNotifierProvider(create: (context) => PengajuanServices()),
+        ChangeNotifierProvider(create: (context) => EvaluasiPinjamanServices()),
+        ChangeNotifierProvider(create: (context) => EvaluasiTawaranServices()),
+        ChangeNotifierProvider(create: (context) => EvaluasiHutangServices()),
+        ChangeNotifierProvider(create: (context) => UserServices()),
       ],
       child: GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: MaterialApp(
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('id', 'ID'),
+          ],
           debugShowCheckedModeBanner: false,
           title: 'Utangin',
           theme: ThemeData(
@@ -103,10 +112,14 @@ class MyApp extends StatelessWidget {
           home: FutureBuilder<bool>(
             future: getsession(),
             builder: (BuildContext context, snapshot) {
-              if (snapshot.data == true) {
-                return MenuLogin();
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
               } else {
-                return MyHomePage();
+                if (snapshot.data == true) {
+                  return MenuLogin();
+                } else {
+                  return MyHomePage();
+                }
               }
             },
           ),
@@ -154,9 +167,11 @@ class MyApp extends StatelessWidget {
             NotifSuksesRevisi.nameRoute: (context) => NotifSuksesRevisi(),
             EvaluasiPelunasan.nameRoute: (context) => EvaluasiPelunasan(),
             EvaluasiPembayaran.nameRoute: (context) => EvaluasiPembayaran(),
-            EvaluasiCicilanLender.nameRoute: (context) => EvaluasiCicilanLender(),
+            EvaluasiCicilanLender.nameRoute: (context) =>
+                EvaluasiCicilanLender(),
             DetailCicilanLender.nameRoute: (context) => DetailCicilanLender(),
-            NotifSuksesPelunasanLender.nameRoute: (context) => NotifSuksesPelunasanLender(),
+            NotifSuksesPelunasanLender.nameRoute: (context) =>
+                NotifSuksesPelunasanLender(),
           },
           onGenerateRoute: (settings) {
             if (settings.name == PassArgumentsScreen.routeName) {

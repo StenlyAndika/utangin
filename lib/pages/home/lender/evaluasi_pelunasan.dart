@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utangin/pages/home/lender/evaluasi_cicilan_lender.dart';
-import '../../../models/evaluasi_hutang_model.dart';
-import '../../../models/evaluasi_pinjaman_model.dart';
+import '../../../services/evaluasi_hutang_services.dart';
+import '../../../services/evaluasi_pinjaman_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -49,13 +49,6 @@ class _EvaluasiPelunasanState extends State<EvaluasiPelunasan> {
     }
   }
 
-  getListPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? ktp = await prefs.getString("ktp");
-    session.getListPinjaman(ktp!);
-  }
-
   @override
   void initState() {
     getMenu();
@@ -63,9 +56,17 @@ class _EvaluasiPelunasanState extends State<EvaluasiPelunasan> {
     super.initState();
   }
 
+  getListPinjaman() async {
+    final session =
+        Provider.of<EvaluasiPinjamanServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    await session.getListPinjaman(ktp!);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiHutangModel>(context, listen: false);
+    final config = Provider.of<EvaluasiHutangServices>(context, listen: false);
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
@@ -155,7 +156,7 @@ class _EvaluasiPelunasanState extends State<EvaluasiPelunasan> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiPinjamanModel>(
+            Consumer<EvaluasiPinjamanServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.datapinjaman.length; i++) ...[
@@ -192,7 +193,7 @@ class _EvaluasiPelunasanState extends State<EvaluasiPelunasan> {
                                 "Belum Lunas",
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.yellow,
+                                  color: Color.fromARGB(255, 75, 72, 72),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

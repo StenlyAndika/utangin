@@ -26,6 +26,8 @@ class _AuthPageState extends State<AuthPage> {
   final nohp = TextEditingController();
   final kodeotp = TextEditingController();
   late bool otpsend, otpverified, _emailvalid, _start;
+  late FocusNode _focusNode;
+  late TextEditingController _textFieldController;
 
   @override
   void initState() {
@@ -35,6 +37,10 @@ class _AuthPageState extends State<AuthPage> {
     otpverified = false;
     _emailvalid = false;
     _start = false;
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _textFieldController.clear();
+    });
     super.initState();
   }
 
@@ -151,17 +157,17 @@ class _AuthPageState extends State<AuthPage> {
                             width: 15,
                             height: 15,
                             decoration: BoxDecoration(
-                                color: (value.emailterdaftar == "true")
+                                color: (value.emailterdaftar == "false")
                                     ? Colors.red
                                     : (_emailvalid == true)
                                         ? Colors.green
                                         : Colors.red,
-                                border: (value.emailterdaftar == "true")
+                                border: (value.emailterdaftar == "false")
                                     ? Border.all(color: Colors.transparent)
                                     : Border.all(color: Colors.grey.shade400),
                                 borderRadius: BorderRadius.circular(50)),
                             child: Center(
-                              child: (value.emailterdaftar == "true")
+                              child: (value.emailterdaftar == "false")
                                   ? Icon(
                                       Icons.close_rounded,
                                       color: Colors.white,
@@ -184,7 +190,7 @@ class _AuthPageState extends State<AuthPage> {
                         SizedBox(width: 10),
                         Consumer<AuthServices>(
                           builder: (context, value, child) => Text(
-                            (value.emailterdaftar == "true")
+                            (value.emailterdaftar == "false")
                                 ? "Email sudah terdaftar"
                                 : (_emailvalid == true)
                                     ? "Email siap digunakan"
@@ -288,7 +294,7 @@ class _AuthPageState extends State<AuthPage> {
             Consumer<AuthServices>(
               builder: (context, value, child) => Visibility(
                 visible: (_emailvalid)
-                    ? (value.emailterdaftar == "true")
+                    ? (value.emailterdaftar == "false")
                         ? false
                         : true
                     : false,
@@ -296,15 +302,21 @@ class _AuthPageState extends State<AuthPage> {
                   children: [
                     SizedBox(height: 5),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          FormDaftar.nameRoute,
-                          arguments: ScreenArguments(
-                            nohp.text,
-                            email.text,
-                          ),
-                        );
-                      },
+                      onPressed: (_start == false)
+                          ? () {
+                              setState(() {
+                                startTimer();
+                                _start = true;
+                                otpsend = true;
+                                daftar.kirimOTP(email.text);
+                                print("ok");
+                                ReusableWidgets.alertNotification(
+                                    context,
+                                    "Kode OTP telah dikirimkan ke ${email.text}. silakan cek email anda.",
+                                    Icons.celebration);
+                              });
+                            }
+                          : null,
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
@@ -314,7 +326,7 @@ class _AuthPageState extends State<AuthPage> {
                       child: Text(
                         (_start == true)
                             ? "Kirim ulang kode dalam $_countdown detik"
-                            : "Lanjutkan Pendaftaran",
+                            : "Kirim OTP",
                         style: TextStyle(
                             color:
                                 (_start == true) ? Colors.red : Colors.white),

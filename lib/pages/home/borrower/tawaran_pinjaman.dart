@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../pages/home/borrower/form_pengajuan_tawaran.dart';
-import '../../../models/evaluasi_tawaran_model.dart';
+import '../../../services/evaluasi_tawaran_services.dart';
 import '../../../template/reusablewidgets.dart';
 import '../lender/menu_lender.dart';
 import '../menu_login.dart';
@@ -18,10 +18,10 @@ class TawaranPinjaman extends StatefulWidget {
 }
 
 class _TawaranPinjamanState extends State<TawaranPinjaman> {
-  late TextEditingController emaillender;
-  late TextEditingController jumlah;
-  late TextEditingController tglpengembalian;
-  late TextEditingController denda;
+  late TextEditingController emaillender = TextEditingController();
+  late TextEditingController jumlah = TextEditingController();
+  late TextEditingController tglpengembalian = TextEditingController();
+  late TextEditingController denda = TextEditingController();
 
   late String formattedDate;
 
@@ -54,30 +54,30 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
     }
   }
 
+  @override
+  void initState() {
+    getMenu();
+    getDetailTawaran();
+    emaillender.text = "";
+    jumlah.text = "";
+    tglpengembalian.text = "";
+    denda.text = "";
+    formattedDate = "";
+    super.initState();
+  }
+
   getDetailTawaran() async {
-    final session = Provider.of<EvaluasiTawaranModel>(context, listen: false);
+    final session = Provider.of<EvaluasiTawaranServices>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? idp = await prefs.getString("idp");
     await session.getDetailTawaran(idp!);
   }
 
   @override
-  void initState() {
-    getMenu();
-    getDetailTawaran();
-    emaillender = TextEditingController();
-    jumlah = TextEditingController();
-    tglpengembalian = TextEditingController();
-    denda = TextEditingController();
-    formattedDate = "";
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: Consumer<EvaluasiTawaranModel>(
+      body: Consumer<EvaluasiTawaranServices>(
         builder: (context, value, child) => Container(
           padding:
               EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),

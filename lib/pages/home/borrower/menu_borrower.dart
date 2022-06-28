@@ -1,15 +1,18 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/models/user.dart';
-import 'package:utangin/pages/home/borrower/evaluasi_hutang.dart';
+import '../../../services/user.dart';
+import '../../../pages/home/borrower/evaluasi_hutang.dart';
 import '../../../pages/home/borrower/evaluasi_tawaran.dart';
 import '../../../pages/home/borrower/form_pengajuan.dart';
 
-import '../../../models/pengajuan.dart';
+import '../../../services/pengajuan.dart';
+import '../../../template/currencyformat.dart';
 import '../../../template/reusablewidgets.dart';
-import '../lender/menu_lender.dart';
 import '../menu_login.dart';
 
 class MenuBorrower extends StatefulWidget {
@@ -36,14 +39,6 @@ class _MenuBorrowerState extends State<MenuBorrower> {
         selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
-      case 1:
-        selected = 1;
-        if (menu == "lender") {
-          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
-        } else {
-          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
-        }
-        break;
       case 3:
         selected = 3;
         ReusableWidgets.menuPengaturan(context);
@@ -51,11 +46,25 @@ class _MenuBorrowerState extends State<MenuBorrower> {
     }
   }
 
-  getUserData() async {
-    final session = Provider.of<PengajuanModel>(context, listen: false);
+  var url = "http://apiutangin.hendrikofirman.com";
+  var endpoint_hutang_berjalan = "User/Transaksi/Jumlah_hutang_berjalan";
+
+  List<Map<String, dynamic>> piutang = [];
+
+  Future getListPiutang() async {
     final prefs = await SharedPreferences.getInstance();
     String? ktp = await prefs.getString("ktp");
-    session.getUserData(ktp!);
+    try {
+      var response =
+          await http.get(Uri.parse("$url/$endpoint_hutang_berjalan/$ktp"));
+      List data = json.decode(response.body);
+
+      data.forEach((element) {
+        piutang.add(element);
+      });
+    } catch (err) {
+      throw (err);
+    }
   }
 
   @override
@@ -63,6 +72,13 @@ class _MenuBorrowerState extends State<MenuBorrower> {
     getMenu();
     getUserData();
     super.initState();
+  }
+
+  getUserData() async {
+    final session = Provider.of<PengajuanServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    await session.getUserData(ktp!);
   }
 
   @override
@@ -120,7 +136,7 @@ class _MenuBorrowerState extends State<MenuBorrower> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Consumer<PengajuanModel>(
+                Consumer<PengajuanServices>(
                   builder: (context, value, child) => Text(
                     (value.datauser["nama"] != null)
                         ? value.datauser["nama"]
@@ -169,7 +185,7 @@ class _MenuBorrowerState extends State<MenuBorrower> {
               }).toList(),
             ),
             SizedBox(height: 10),
-            Consumer<UserModel>(
+            Consumer<UserServices>(
               builder: (context, value, child) => ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
                 child: Container(
@@ -190,116 +206,133 @@ class _MenuBorrowerState extends State<MenuBorrower> {
                       tileMode: TileMode.mirror,
                     ),
                   ),
-                  child: ListView(
-                    children: [
-                      Text(
-                        "Total Hutang Berjalan Saya",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        "Rp.1",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 100,
-                            width: 80,
-                            child: Column(
-                              children: [
-                                CircleAvatar(
-                                  child: Text(
-                                    "15",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  backgroundColor:
-                                      Colors.white.withOpacity(0.4),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Jumlah Pinjaman Saya",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12),
-                                )
-                              ],
+                  child: FutureBuilder(
+                    future: getListPiutang(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else {
+                        return ListView(
+                          children: [
+                            Text(
+                              "Total Hutang Berjalan Saya",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
                             ),
-                          ),
-                          SizedBox(width: 10),
-                          Container(
-                            height: 100,
-                            width: 80,
-                            child: Column(
-                              children: [
-                                CircleAvatar(
-                                  child: Text(
-                                    "7",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                  backgroundColor:
-                                      Colors.white.withOpacity(0.4),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Jumlah Orang yang Saya Pinjam",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12),
-                                )
-                              ],
+                            SizedBox(height: 5),
+                            Text(
+                              CurrencyFormat.convertToIdr(
+                                  piutang[0]['hutang_berjalan'], 2),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 26),
                             ),
-                          ),
-                          SizedBox(width: 10),
-                          Container(
-                            height: 100,
-                            width: 80,
-                            child: Column(
+                            SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CircleAvatar(
-                                  child: Text(
-                                    "2",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
+                                Container(
+                                  height: 100,
+                                  width: 80,
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                        child: Text(
+                                          (piutang[0]['jumlah_pinjaman'] !=
+                                                  null)
+                                              ? "${piutang[0]['jumlah_pinjaman']}"
+                                              : "0",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        backgroundColor:
+                                            Colors.white.withOpacity(0.4),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "Jumlah Pinjaman Saya",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12),
+                                      )
+                                    ],
                                   ),
-                                  backgroundColor:
-                                      Colors.white.withOpacity(0.4),
                                 ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Jumlah Pinjaman Lunas",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12),
-                                )
+                                SizedBox(width: 10),
+                                Container(
+                                  height: 100,
+                                  width: 80,
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                        child: Text(
+                                          (piutang[0]['jumlah_lender'] != null)
+                                              ? "${piutang[0]['jumlah_lender']}"
+                                              : "0",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        backgroundColor:
+                                            Colors.white.withOpacity(0.4),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "Jumlah Orang yang Saya Pinjam",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Container(
+                                  height: 100,
+                                  width: 80,
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                        child: Text(
+                                          (piutang[0]['pinjaman_lunas'] != null)
+                                              ? "${piutang[0]['pinjaman_lunas']}"
+                                              : "0",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        backgroundColor:
+                                            Colors.white.withOpacity(0.4),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "Jumlah Pinjaman Lunas",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ],
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                            )
+                          ],
+                        );
+                      }
+                    },
                   ),
                 ),
               ),

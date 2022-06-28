@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../pages/home/lender/form_revisi.dart';
 import '../../../template/reusablewidgets.dart';
-import '../../../models/evaluasi_pinjaman_model.dart';
+import '../../../services/evaluasi_pinjaman_services.dart';
 import '../borrower/menu_borrower.dart';
 import '../menu_login.dart';
 import 'menu_lender.dart';
@@ -19,15 +19,15 @@ class DetailPermohonan extends StatefulWidget {
 }
 
 class _DetailPermohonanState extends State<DetailPermohonan> {
-  late TextEditingController emailpeminjam;
-  late TextEditingController namapeminjam;
-  late TextEditingController jumlah;
-  late TextEditingController norek;
-  late TextEditingController notrans;
-  late TextEditingController kegunaan;
-  late TextEditingController tglpengembalian;
-  late TextEditingController termin;
-  late TextEditingController denda;
+  late TextEditingController emailpeminjam = TextEditingController();
+  late TextEditingController namapeminjam = TextEditingController();
+  late TextEditingController jumlah = TextEditingController();
+  late TextEditingController norek = TextEditingController();
+  late TextEditingController notrans = TextEditingController();
+  late TextEditingController kegunaan = TextEditingController();
+  late TextEditingController tglpengembalian = TextEditingController();
+  late TextEditingController termin = TextEditingController();
+  late TextEditingController denda = TextEditingController();
 
   late String ktptujuan;
 
@@ -60,35 +60,35 @@ class _DetailPermohonanState extends State<DetailPermohonan> {
     }
   }
 
+  @override
+  void initState() {
+    getMenu();
+    getDetailPinjaman();
+    emailpeminjam.text = "";
+    namapeminjam.text = "";
+    jumlah.text = "";
+    norek.text = "";
+    notrans.text = "";
+    kegunaan.text = "";
+    tglpengembalian.text = "";
+    termin.text = "";
+    denda.text = "";
+    super.initState();
+  }
+
   getDetailPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
+    final session = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? idp = await prefs.getString("idp");
     await session.getDetailPinjaman(idp!);
   }
 
   @override
-  void initState() {
-    getMenu();
-    getDetailPinjaman();
-    emailpeminjam = TextEditingController();
-    namapeminjam = TextEditingController();
-    jumlah = TextEditingController();
-    norek = TextEditingController();
-    notrans = TextEditingController();
-    kegunaan = TextEditingController();
-    tglpengembalian = TextEditingController();
-    termin = TextEditingController();
-    denda = TextEditingController();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
+    final config = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: Consumer<EvaluasiPinjamanModel>(
+      body: Consumer<EvaluasiPinjamanServices>(
         builder: (context, value, child) => Container(
           padding:
               EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),

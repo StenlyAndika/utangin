@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../models/evaluasi_pinjaman_model.dart';
+import '../../../services/evaluasi_pinjaman_services.dart';
 import '../../../template/reusablewidgets.dart';
 
 class UploadBuktiPeminjaman extends StatefulWidget {
@@ -98,7 +98,7 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
 
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
+    final config = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(

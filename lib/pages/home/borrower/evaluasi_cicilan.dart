@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utangin/pages/home/borrower/detail_cicilan.dart';
-import '../../../models/evaluasi_hutang_model.dart';
+import '../../../services/evaluasi_hutang_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -48,18 +48,18 @@ class _EvaluasiCicilanState extends State<EvaluasiCicilan> {
     }
   }
 
-  getListCicilan() async {
-    final session = Provider.of<EvaluasiHutangModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? idt = await prefs.getString("id_transaksi");
-    session.getListCicilan(idt!);
-  }
-
   @override
   void initState() {
     getMenu();
     getListCicilan();
     super.initState();
+  }
+
+  getListCicilan() async {
+    final session = Provider.of<EvaluasiHutangServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? idt = await prefs.getString("id_transaksi");
+    await session.getListCicilan(idt!);
   }
 
   @override
@@ -153,7 +153,7 @@ class _EvaluasiCicilanState extends State<EvaluasiCicilan> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiHutangModel>(
+            Consumer<EvaluasiHutangServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.listcicilan.length; i++) ...[
@@ -223,6 +223,26 @@ class _EvaluasiCicilanState extends State<EvaluasiCicilan> {
                               onPressed: () {},
                               child: Text(
                                 "Telah Bayar",
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.green,
+                                fixedSize: Size(50, 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ] else if (value.listcicilan[i]["status"] == "2") ...[
+                          Container(
+                            width: width * 0.3,
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "Lunas",
                                 style: TextStyle(
                                     fontSize: 11, color: Colors.white),
                               ),

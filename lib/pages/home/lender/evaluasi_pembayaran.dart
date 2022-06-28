@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/home/borrower/detail_cicilan.dart';
-import '../../../models/evaluasi_hutang_model.dart';
+import '../../../pages/home/borrower/detail_cicilan.dart';
+import '../../../services/evaluasi_hutang_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -48,18 +48,18 @@ class _EvaluasiPembayaranState extends State<EvaluasiPembayaran> {
     }
   }
 
-  getListCicilan() async {
-    final session = Provider.of<EvaluasiHutangModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? idt = await prefs.getString("id_transaksi");
-    session.getListCicilan(idt!);
-  }
-
   @override
   void initState() {
     getMenu();
     getListCicilan();
     super.initState();
+  }
+
+  getListCicilan() async {
+    final session = Provider.of<EvaluasiHutangServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? idt = await prefs.getString("id_transaksi");
+    await session.getListCicilan(idt!);
   }
 
   @override
@@ -153,7 +153,7 @@ class _EvaluasiPembayaranState extends State<EvaluasiPembayaran> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiHutangModel>(
+            Consumer<EvaluasiHutangServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.listcicilan.length; i++) ...[

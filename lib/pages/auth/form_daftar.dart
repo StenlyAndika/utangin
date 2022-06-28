@@ -1,11 +1,11 @@
 import 'dart:io';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../../pages/auth/form_login.dart';
 import '../../../main.dart';
-import '../../../models/auth.dart';
+import '../../../services/auth.dart';
 import '../../../template/reusablewidgets.dart';
 
 class FormDaftar extends StatefulWidget {
@@ -20,18 +20,19 @@ class FormDaftar extends StatefulWidget {
 class _FormDaftarState extends State<FormDaftar> {
   File? _fotoktp, _fotoselfie, _tandatangan;
   late String jekel;
-  late TextEditingController ktp;
-  late TextEditingController nama;
-  late TextEditingController email;
-  late TextEditingController password;
-  late TextEditingController tgllahir;
-  late TextEditingController npwp;
-  late TextEditingController alamat;
-  late TextEditingController rt;
-  late TextEditingController provinsi;
-  late TextEditingController pendidikan;
-  late TextEditingController pekerjaan;
-  late TextEditingController nohp;
+  late TextEditingController ktp = TextEditingController();
+  late TextEditingController nama = TextEditingController();
+  late TextEditingController email = TextEditingController();
+  late TextEditingController password = TextEditingController();
+  late TextEditingController tgllahir = TextEditingController();
+  late TextEditingController npwp = TextEditingController();
+  late TextEditingController alamat = TextEditingController();
+  late TextEditingController rt = TextEditingController();
+  late TextEditingController rw = TextEditingController();
+  late TextEditingController provinsi = TextEditingController();
+  late TextEditingController pendidikan = TextEditingController();
+  late TextEditingController pekerjaan = TextEditingController();
+  late TextEditingController nohp = TextEditingController();
 
   void showOptionMenu(int stat) {
     showModalBottomSheet(
@@ -89,8 +90,6 @@ class _FormDaftarState extends State<FormDaftar> {
                           if (stat == 1) {
                             _fotoktp = File(pickedImage!.path);
                           } else if (stat == 2) {
-                            _fotoselfie = File(pickedImage!.path);
-                          } else if (stat == 3) {
                             _tandatangan = File(pickedImage!.path);
                           }
                         });
@@ -135,18 +134,19 @@ class _FormDaftarState extends State<FormDaftar> {
 
   @override
   void initState() {
-    ktp = TextEditingController();
-    nama = TextEditingController();
-    email = TextEditingController();
-    password = TextEditingController();
-    tgllahir = TextEditingController();
-    npwp = TextEditingController();
-    alamat = TextEditingController();
-    rt = TextEditingController();
-    provinsi = TextEditingController();
-    pendidikan = TextEditingController();
-    pekerjaan = TextEditingController();
-    nohp = TextEditingController();
+    ktp.text = "";
+    nama.text = "";
+    email.text = "";
+    password.text = "";
+    tgllahir.text = "";
+    npwp.text = "";
+    alamat.text = "";
+    rt.text = "";
+    rw.text = "";
+    provinsi.text = "";
+    pendidikan.text = "";
+    pekerjaan.text = "";
+    nohp.text = "";
     jekel = "Jenis Kelamin";
     super.initState();
   }
@@ -154,7 +154,7 @@ class _FormDaftarState extends State<FormDaftar> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
-    final daftar = Provider.of<AuthModel>(context, listen: false);
+    final daftar = Provider.of<AuthServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: ReusableWidgets.backAppBar("Daftar", context),
@@ -190,8 +190,7 @@ class _FormDaftarState extends State<FormDaftar> {
             Container(
               padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
-                border:
-                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+                border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
@@ -218,8 +217,7 @@ class _FormDaftarState extends State<FormDaftar> {
             Container(
               padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
-                border:
-                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+                border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
@@ -248,8 +246,8 @@ class _FormDaftarState extends State<FormDaftar> {
                   ),
                   border: InputBorder.none,
                   labelText: "Password",
-                  labelStyle: TextStyle(
-                      color: Color.fromARGB(255, 110, 108, 108)),
+                  labelStyle:
+                      TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                 ),
               ),
             ),
@@ -326,8 +324,7 @@ class _FormDaftarState extends State<FormDaftar> {
             Container(
               padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
-                border:
-                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+                border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
@@ -354,7 +351,7 @@ class _FormDaftarState extends State<FormDaftar> {
               ),
             ),
             if (ktp.text != "") ...[
-              Consumer<AuthModel>(
+              Consumer<AuthServices>(
                 builder: (context, value, child) => Visibility(
                   visible: (value.ktpterdaftar == "true") ? true : false,
                   child: Container(
@@ -397,8 +394,7 @@ class _FormDaftarState extends State<FormDaftar> {
             Container(
               padding: EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
-                border:
-                    Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+                border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
@@ -438,33 +434,137 @@ class _FormDaftarState extends State<FormDaftar> {
             ReusableWidgets.inputField(
                 "Alamat Sesuai KTP", alamat, TextInputType.text),
             SizedBox(height: 5),
-            ReusableWidgets.inputField("RT/RW", rt, TextInputType.number),
+            ReusableWidgets.inputField("RT", rt, TextInputType.number),
             SizedBox(height: 5),
-            ReusableWidgets.inputField(
-                "Provinsi", provinsi, TextInputType.text),
+            ReusableWidgets.inputField("RW", rw, TextInputType.number),
             SizedBox(height: 5),
-            ReusableWidgets.inputField(
-                "Pendidikan Terakhir", pendidikan, TextInputType.text),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: DropdownSearch<String>(
+                  popupProps: PopupProps.menu(
+                    showSelectedItems: true,
+                  ),
+                  items: [
+                    "Aceh",
+                    "Bali",
+                    "Bangka Belitung",
+                    "Banten",
+                    "Bengkulu",
+                    "Jawa Tengah",
+                    "Kalimantan Tengah",
+                    "Sulawesi Tengah",
+                    "Jawa Timur",
+                    "Kalimantan Timur",
+                    "Nusa Tenggara Timur",
+                    "Gorontalo",
+                    "Daerah Khusus Ibukota Jakarta",
+                    "Jambi",
+                    "Lampung",
+                    "Maluku",
+                    "Sulawesi Utara",
+                    "Sumatera Utara"
+                        "Papua",
+                    "Riau",
+                    "Kepulauan Riau",
+                    "Sulawesi Tenggara",
+                    "Kalimantan Selatan",
+                    "Sulawesi Selatan",
+                    "Sumatera Selatan",
+                    "Jawa Barat",
+                    "Kalimantan Barat",
+                    "Nusa Tenggara Barat",
+                    "Papua Barat",
+                    "Sulawesi Barat",
+                    "Sumatera Barat",
+                    "Daerah Istimewa Yogyakarta",
+                    "Kalimantan Utara",
+                    "Maluku Utara"
+                  ],
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelText: "Provinsi",
+                        labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 124, 113, 113))),
+                  ),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      provinsi.text = newValue!;
+                    });
+                  },
+                  selectedItem: "",
+                ),
+              ),
+            ),
+            SizedBox(height: 5),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: DropdownSearch<String>(
+                  popupProps: PopupProps.menu(
+                    showSelectedItems: true,
+                  ),
+                  items: [
+                    "SMA Sederajat",
+                    "Strata 1 (S1)",
+                    "Strata 2 (S2)",
+                    "Strata 3 (S3)"
+                  ],
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelText: "Pendidikan Terakhir",
+                        labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 124, 113, 113))),
+                  ),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      pendidikan.text = newValue!;
+                    });
+                  },
+                  selectedItem: "",
+                ),
+              ),
+            ),
             SizedBox(height: 5),
             ReusableWidgets.inputField(
                 "Pekerjaan", pekerjaan, TextInputType.text),
             SizedBox(height: 5),
+            Text((_fotoktp == null)
+                ? "Foto KTP belum dipilih."
+                : "Foto KTP telah dipilih."),
+            SizedBox(height: 2),
+            Text((_fotoselfie == null)
+                ? "Foto diri dengan KTP belum dipilih."
+                : "Foto diri dengan KTP telah dipilih."),
+            SizedBox(height: 2),
+            Text((_tandatangan == null)
+                ? "Foto tanda tangan belum dipilih."
+                : "Foto tanda tangan telah dipilih."),
+            SizedBox(height: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   width: 70,
                   height: 70,
-                  child:
-                      _fotoktp == null ? Text("") : Image.file(_fotoktp!),
+                  child: _fotoktp == null ? Text("") : Image.file(_fotoktp!),
                 ),
                 SizedBox(width: 5),
                 SizedBox(
                   width: 70,
                   height: 70,
-                  child: _fotoselfie == null
-                      ? Text("")
-                      : Image.file(_fotoselfie!),
+                  child:
+                      _fotoselfie == null ? Text("") : Image.file(_fotoselfie!),
                 ),
                 SizedBox(width: 5),
                 SizedBox(
@@ -502,7 +602,13 @@ class _FormDaftarState extends State<FormDaftar> {
                   SizedBox(height: 5),
                   ElevatedButton(
                     onPressed: () {
-                      showOptionMenu(2);
+                      ReusableWidgets.openCamera(0).then((pickedImage) {
+                        if (pickedImage != null) {
+                          setState(() {
+                            _fotoselfie = File(pickedImage!.path);
+                          });
+                        }
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size.fromHeight(50),
@@ -518,7 +624,7 @@ class _FormDaftarState extends State<FormDaftar> {
                   SizedBox(height: 5),
                   ElevatedButton(
                     onPressed: () {
-                      showOptionMenu(3);
+                      showOptionMenu(2);
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size.fromHeight(50),
@@ -559,6 +665,7 @@ class _FormDaftarState extends State<FormDaftar> {
                           npwp.text,
                           alamat.text,
                           rt.text,
+                          rw.text,
                           provinsi.text,
                           pendidikan.text,
                           pekerjaan.text,
@@ -590,6 +697,37 @@ class _FormDaftarState extends State<FormDaftar> {
   }
 
   Container inputJekel() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(left: 10),
+        child: DropdownSearch<String>(
+          popupProps: PopupProps.menu(
+            showSelectedItems: true,
+          ),
+          items: ["Laki-Laki", "Perempuan"],
+          dropdownDecoratorProps: DropDownDecoratorProps(
+            dropdownSearchDecoration: InputDecoration(
+                border: InputBorder.none,
+                labelText: "Jenis Kelamin",
+                labelStyle:
+                    TextStyle(color: Color.fromARGB(255, 124, 113, 113))),
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              jekel = newValue!;
+            });
+          },
+          selectedItem: "",
+        ),
+      ),
+    );
+  }
+
+  Container inputJekel2() {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),

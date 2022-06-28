@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../pages/auth/authentication.dart';
-import '../../../models/auth.dart';
+import '../../../services/auth.dart';
 import '../../../template/reusablewidgets.dart';
 
 class FormLogin extends StatefulWidget {
@@ -14,21 +14,21 @@ class FormLogin extends StatefulWidget {
 }
 
 class _FormLoginState extends State<FormLogin> {
-  late TextEditingController email;
-  late TextEditingController password;
+  late TextEditingController email = TextEditingController();
+  late TextEditingController password = TextEditingController();
 
   bool _isVisible = true;
 
   @override
   void initState() {
-    email = TextEditingController();
-    password = TextEditingController();
+    email.text = "";
+    password.text = "";
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final login = Provider.of<AuthModel>(context, listen: false);
+    final login = Provider.of<AuthServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: ReusableWidgets.backAppBar("Log in", context),

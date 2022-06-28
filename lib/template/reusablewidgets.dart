@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/auth.dart';
+import '../services/auth.dart';
 import '../pages/home/user/data_rekening.dart';
 
 class ReusableWidgets {
@@ -145,7 +145,7 @@ class ReusableWidgets {
   }
 
   static menuPengaturan(context) {
-    final auth = Provider.of<AuthModel>(context, listen: false);
+    final auth = Provider.of<AuthServices>(context, listen: false);
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {

@@ -5,54 +5,36 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
-import 'package:utangin/pages/home/user/data_rekening.dart';
+import '../../pages/home/user/data_rekening.dart';
 
 import '../template/reusablewidgets.dart';
 
-class UserModel with ChangeNotifier {
+class UserServices with ChangeNotifier {
   List<dynamic> _datarekening = [];
   List<dynamic> get datarekening => _datarekening;
 
-  List<dynamic> _hutangberjalan = [];
-  List<dynamic> get hutangberjalan => _hutangberjalan;
-
-  Map<String, dynamic> _piutangberjalan = {};
-  Map<String, dynamic> get piutangberjalan => _piutangberjalan;
-
-  var url = "http://10.0.2.2/Utangin_API";
-  var endpoint_hutang_berjalan = "User/Transaksi/Jumlah_hutang_berjalan";
-  var endpoint_piutang_berjalan = "User/Transaksi/Jumlah_piutang_berjalan";
+  var url = "http://apiutangin.hendrikofirman.com";
   var endpoint_cari_rekening = "User/Rekening/Baca_ktp";
   var endpoint_hapus_rekening = "User/Rekening/Hapus";
   var endpoint_tambah_rekening = "User/Rekening/Tambah";
 
-  getListHutang(String ktpborrower) async {
-    var hasilResponse = await http
-        .get(Uri.parse("$url/$endpoint_hutang_berjalan/$ktpborrower"));
-    _hutangberjalan = await json.decode(hasilResponse.body);
-    print(_hutangberjalan);
-    notifyListeners();
-  }
-
-  getListPiutang(String ktplender) async {
-    var hasilResponse =
-        await http.get(Uri.parse("$url/$endpoint_piutang_berjalan/$ktplender"));
-    _piutangberjalan = await json.decode(hasilResponse.body);
-    notifyListeners();
-  }
-
   getListRekening(String ktp) async {
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_cari_rekening/$ktp"));
-    _datarekening = await json.decode(hasilResponse.body);
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _datarekening = [];
+    } else {
+      notifyListeners();
+      _datarekening = await json.decode(response.body)[0];
+    }
   }
 
   Future hapusRekening(String id_rekening) async {
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_hapus_rekening/$id_rekening"));
     notifyListeners();
-    return hasilResponse.statusCode;
+    return response.statusCode;
   }
 
   tambahRekening(ktp, norek, bank, context) async {

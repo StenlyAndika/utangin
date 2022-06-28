@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../pages/home/lender/detail_cicilan_lender.dart';
-import '../../../models/evaluasi_hutang_model.dart';
+import '../../../services/evaluasi_hutang_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -48,18 +48,18 @@ class _EvaluasiCicilanLenderState extends State<EvaluasiCicilanLender> {
     }
   }
 
-  getListCicilan() async {
-    final session = Provider.of<EvaluasiHutangModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? idt = await prefs.getString("id_transaksi");
-    session.getListCicilan(idt!);
-  }
-
   @override
   void initState() {
     getMenu();
     getListCicilan();
     super.initState();
+  }
+
+  getListCicilan() async {
+    final session = Provider.of<EvaluasiHutangServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? idt = await prefs.getString("id_transaksi");
+    await session.getListCicilan(idt!);
   }
 
   @override
@@ -153,7 +153,7 @@ class _EvaluasiCicilanLenderState extends State<EvaluasiCicilanLender> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiHutangModel>(
+            Consumer<EvaluasiHutangServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.listcicilan.length; i++) ...[
@@ -194,7 +194,7 @@ class _EvaluasiCicilanLenderState extends State<EvaluasiCicilanLender> {
                             style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.yellow),
+                                color: Color.fromARGB(255, 80, 78, 78)),
                           ),
                         ),
                       ],
@@ -242,7 +242,7 @@ class _EvaluasiCicilanLenderState extends State<EvaluasiCicilanLender> {
                                     fontSize: 11, color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.yellow,
+                                primary: Colors.orange,
                                 fixedSize: Size(150, 10),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),

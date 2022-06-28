@@ -11,10 +11,10 @@ import 'package:utangin/pages/home/lender/sukses_revisi.dart';
 
 import '../pages/home/lender/sukses_konfirmasi.dart';
 import '../pages/home/lender/sukses_tawaran_peminjaman.dart';
-import '../pages/home/lender/upload__bukti_peminjaman.dart';
+import '../pages/home/lender/upload_bukti_peminjaman.dart';
 import '../template/reusablewidgets.dart';
 
-class EvaluasiPinjamanModel with ChangeNotifier {
+class EvaluasiPinjamanServices with ChangeNotifier {
   List<dynamic> _datapinjaman = [];
   List<dynamic> get datapinjaman => _datapinjaman;
 
@@ -24,7 +24,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
   Map<String, dynamic> _detailpinjaman = {};
   Map<String, dynamic> get detailpinjaman => _detailpinjaman;
 
-  var url = "http://10.0.2.2/Utangin_API";
+  var url = "http://apiutangin.hendrikofirman.com";
   var endpoint_list_pinjaman = "User/Permohonan/Permohonan_kepada_saya";
   var endpoint_detail_pinjaman = "User/Permohonan/Detail_permohonan";
   var endpoint_acc = "User/Permohonan/ACC_lender";
@@ -34,28 +34,38 @@ class EvaluasiPinjamanModel with ChangeNotifier {
   var endpoint_cari_borrower = "User/Data_user/Read_email";
 
   getListPinjaman(String niklender) async {
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_list_pinjaman/$niklender"));
-    _datapinjaman = await json.decode(hasilResponse.body);
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _datapinjaman = [];
+    } else {
+      notifyListeners();
+      _datapinjaman = await json.decode(response.body);
+    }
   }
 
   getDetailPinjaman(String idpermohonan) async {
-    var hasilResponse = await http
+    var response = await http
         .get(Uri.parse("$url/$endpoint_detail_pinjaman/$idpermohonan"));
-    _detailpinjaman = await json.decode(hasilResponse.body)[0];
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _detailpinjaman = {};
+    } else {
+      notifyListeners();
+      _detailpinjaman = await json.decode(response.body)[0];
+    }
   }
 
   Future cariBorrower(String email) async {
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_cari_borrower?email=$email"));
-    if (json.decode(hasilResponse.body).isEmpty) {
+    if (json.decode(response.body).isEmpty) {
       notifyListeners();
       return _databorrower = {};
     } else {
       notifyListeners();
-      return _databorrower = await json.decode(hasilResponse.body)[0];
+      return _databorrower = await json.decode(response.body)[0];
     }
   }
 
@@ -67,7 +77,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String? ktp_lender = await prefs.getString("ktp");
     try {
-      var hasilResponse = await http.post(
+      var response = await http.post(
         Uri.parse("$url/$endpoint_kirim_tawaran"),
         body: {
           "ktp_lender": ktp_lender,
@@ -78,7 +88,9 @@ class EvaluasiPinjamanModel with ChangeNotifier {
         },
       ).timeout(Duration(seconds: 10));
 
-      if (hasilResponse.statusCode == 200) {
+      print(response.body);
+
+      if (response.statusCode == 200) {
         pd.close();
         notifyListeners();
         Navigator.of(context)
@@ -86,7 +98,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
       } else {
         pd.close();
         ReusableWidgets.alertNotification(
-            context, "Revisi Peminjaman gagal dikirim", Icons.error);
+            context, "Tawaran Peminjaman gagal dikirim", Icons.error);
       }
     } on TimeoutException {
       pd.close();
@@ -105,7 +117,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String? ktp = await prefs.getString("ktp");
     try {
-      var hasilResponse = await http.post(
+      var response = await http.post(
         Uri.parse("$url/$endpoint_revisi"),
         body: {
           "ktp": ktp,
@@ -120,7 +132,7 @@ class EvaluasiPinjamanModel with ChangeNotifier {
         },
       ).timeout(Duration(seconds: 10));
 
-      if (hasilResponse.statusCode == 200) {
+      if (response.statusCode == 200) {
         pd.close();
         notifyListeners();
         Navigator.of(context).pushReplacementNamed(NotifSuksesRevisi.nameRoute);
@@ -144,13 +156,13 @@ class EvaluasiPinjamanModel with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String? ktp = await prefs.getString("ktp");
     try {
-      var hasilResponse = await http.post(
+      var response = await http.post(
         Uri.parse("$url/$endpoint_acc/$idp"),
         body: {
           "ktp": ktp,
         },
       ).timeout(Duration(seconds: 10));
-      if (hasilResponse.statusCode == 200) {
+      if (response.statusCode == 200) {
         pd.close();
         notifyListeners();
         Navigator.of(context)

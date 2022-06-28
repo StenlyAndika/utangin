@@ -6,11 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../json/json_rekening.dart';
+import '../../../models/model_rekening.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
-import '../../../models/evaluasi_tawaran_model.dart';
-import '../../../models/pengajuan.dart';
+import '../../../services/evaluasi_tawaran_services.dart';
+import '../../../services/pengajuan.dart';
 import '../lender/menu_lender.dart';
 import 'menu_borrower.dart';
 
@@ -24,14 +24,14 @@ class FormPengajuanTawaran extends StatefulWidget {
 }
 
 class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
-  late TextEditingController emailtujuan;
-  late TextEditingController namapemberipinjaman;
-  late TextEditingController jumlahpinjam;
+  late TextEditingController emailtujuan = TextEditingController();
+  late TextEditingController namapemberipinjaman = TextEditingController();
+  late TextEditingController jumlahpinjam = TextEditingController();
   late String norek;
-  late TextEditingController kegunaanpinjam;
-  late TextEditingController tglpengembalian;
-  late TextEditingController terminpembayaran;
-  late TextEditingController denda;
+  late TextEditingController kegunaanpinjam = TextEditingController();
+  late TextEditingController tglpengembalian = TextEditingController();
+  late TextEditingController terminpembayaran = TextEditingController();
+  late TextEditingController denda = TextEditingController();
 
   late String ktptujuan;
   String? tglp;
@@ -66,46 +66,45 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
     }
   }
 
+  @override
+  void initState() {
+    getMenu();
+    getDetailTawaran();
+    emailtujuan.text = "";
+    namapemberipinjaman.text = "";
+    jumlahpinjam.text = "";
+    norek = "";
+    ktptujuan = "";
+    kegunaanpinjam.text = "";
+    tglpengembalian.text = "";
+    terminpembayaran.text = "";
+    denda.text = "";
+    super.initState();
+  }
+
   getDetailTawaran() async {
-    final config = Provider.of<EvaluasiTawaranModel>(context, listen: false);
-    final user = Provider.of<PengajuanModel>(context, listen: false);
+    final config = Provider.of<EvaluasiTawaranServices>(context, listen: false);
+    final user = Provider.of<PengajuanServices>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     id_penawaran = await prefs.getString("idp");
     tglp = await prefs.getString('tgl');
 
     tglpengembalian.text = tglp.toString();
-    user.cariLender(emailtujuan.text).then((value) {
+    await user.cariLender(emailtujuan.text).then((value) {
       ktptujuan = value["ktp"];
     });
     await config.getDetailTawaran(id_penawaran!);
   }
 
   @override
-  void initState() {
-    getMenu();
-    getDetailTawaran();
-    emailtujuan = TextEditingController();
-    namapemberipinjaman = TextEditingController();
-    jumlahpinjam = TextEditingController();
-    norek = "";
-    ktptujuan = "";
-    kegunaanpinjam = TextEditingController();
-    tglpengembalian = TextEditingController();
-    terminpembayaran = TextEditingController();
-    denda = TextEditingController();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final user = Provider.of<PengajuanModel>(context, listen: false);
-    final config = Provider.of<EvaluasiTawaranModel>(context, listen: false);
+    final user = Provider.of<PengajuanServices>(context, listen: false);
+    final config = Provider.of<EvaluasiTawaranServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: Consumer<EvaluasiTawaranModel>(
+      body: Consumer<EvaluasiTawaranServices>(
         builder: (context, value, child) => Container(
-          padding:
-              EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           alignment: Alignment.center,
           child: ListView(
             children: [
@@ -141,8 +140,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -161,8 +159,8 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
                     contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Email Pemberi Pinjaman*",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
@@ -170,8 +168,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -190,8 +187,8 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
                     contentPadding: EdgeInsets.all(5),
                     border: InputBorder.none,
                     labelText: "Nama Pemberi Pinjaman*",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
@@ -199,8 +196,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -220,16 +216,15 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
                     border: InputBorder.none,
                     labelText: "Jumlah Pinjaman*",
                     prefixText: "Rp.",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
               SizedBox(height: 5),
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Padding(
@@ -239,7 +234,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
                       final prefs = await SharedPreferences.getInstance();
                       var ktpuser = await prefs.getString('ktp');
                       var hasilResponse = await http.get(Uri.parse(
-                          "http://10.0.2.2/Utangin_API/User/Rekening/Baca_ktp/$ktpuser"));
+                          "http://apiutangin.hendrikofirman.com/User/Rekening/Baca_ktp/$ktpuser"));
 
                       if (hasilResponse.statusCode != 200) {
                         return [];
@@ -290,8 +285,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -329,8 +323,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -349,8 +342,8 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
                     border: InputBorder.none,
                     labelText: "Termin Pembayaran",
                     suffixText: "x Cicilan",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
@@ -358,8 +351,7 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -379,8 +371,8 @@ class _FormPengajuanTawaranState extends State<FormPengajuanTawaran> {
                     labelText: "Telat tenggat waktu ada denda?",
                     prefixText: "Ya",
                     suffixText: "% per hari",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),

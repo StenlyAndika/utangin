@@ -14,9 +14,10 @@ class JsonRekening {
       {required this.no_rek, required this.id_rekening, required this.bank});
 
   factory JsonRekening.fromJson(Map<String, dynamic> json) => JsonRekening(
-      no_rek: json['no_rek'],
-      id_rekening: json['id_rekening'],
-      bank: json['bank']);
+        no_rek: json['no_rek'],
+        id_rekening: json['id_rekening'],
+        bank: json['bank'],
+      );
 
   Map<String, dynamic> toJson() =>
       {'id_rekening': id_rekening, 'no_rek': no_rek, 'bank': bank};

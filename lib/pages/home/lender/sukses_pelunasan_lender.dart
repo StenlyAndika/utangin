@@ -56,6 +56,7 @@ class NotifSuksesPelunasanLender extends StatelessWidget {
                   ),
                   Text(
                     "Konfirmasi pelunasan telah kamu setujui",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,

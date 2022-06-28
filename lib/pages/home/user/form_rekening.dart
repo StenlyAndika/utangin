@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../models/user.dart';
+import '../../../services/user.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -58,7 +58,7 @@ class _FormRekeningState extends State<FormRekening> {
 
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<UserModel>(context, listen: false);
+    final config = Provider.of<UserServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Container(

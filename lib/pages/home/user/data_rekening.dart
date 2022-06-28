@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utangin/pages/home/user/form_rekening.dart';
-import '../../../models/user.dart';
+import '../../../services/user.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -47,13 +47,6 @@ class _DataRekeningState extends State<DataRekening> {
     }
   }
 
-  getListRekening() async {
-    final session = Provider.of<UserModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? ktp = await prefs.getString("ktp");
-    session.getListRekening(ktp!);
-  }
-
   @override
   void initState() {
     getMenu();
@@ -61,9 +54,16 @@ class _DataRekeningState extends State<DataRekening> {
     super.initState();
   }
 
+  getListRekening() async {
+    final session = Provider.of<UserServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    await session.getListRekening(ktp!);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<UserModel>(context, listen: false);
+    final config = Provider.of<UserServices>(context, listen: false);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize:
@@ -139,7 +139,7 @@ class _DataRekeningState extends State<DataRekening> {
         alignment: Alignment.centerLeft,
         child: ListView(
           children: [
-            Consumer<UserModel>(
+            Consumer<UserServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.datarekening.length; i++) ...[

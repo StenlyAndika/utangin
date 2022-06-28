@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../models/evaluasi_hutang_model.dart';
+import '../../../services/evaluasi_hutang_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -59,26 +59,26 @@ class _DetailCicilanState extends State<DetailCicilan> {
     }
   }
 
+  @override
+  void initState() {
+    getMenu();
+    getDetailCicilan();
+    super.initState();
+  }
+
   getDetailCicilan() async {
-    final session = Provider.of<EvaluasiHutangModel>(context, listen: false);
+    final session = Provider.of<EvaluasiHutangServices>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? id_cicilan = await prefs.getString("id_cicilan");
     await session.getDetailCicilan(id_cicilan!);
   }
 
   @override
-  void initState() {
-    super.initState();
-    getMenu();
-    getDetailCicilan();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiHutangModel>(context, listen: false);
+    final config = Provider.of<EvaluasiHutangServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: Consumer<EvaluasiHutangModel>(
+      body: Consumer<EvaluasiHutangServices>(
         builder: (context, value, child) => Container(
           padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           alignment: Alignment.center,

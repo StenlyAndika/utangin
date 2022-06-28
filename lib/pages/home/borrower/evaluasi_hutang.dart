@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utangin/pages/home/borrower/evaluasi_cicilan.dart';
-import '../../../models/evaluasi_hutang_model.dart';
+import '../../../services/evaluasi_hutang_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
@@ -48,13 +48,6 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
     }
   }
 
-  getListHutang() async {
-    final session = Provider.of<EvaluasiHutangModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? ktp = await prefs.getString("ktp");
-    session.getListHutang(ktp!);
-  }
-
   @override
   void initState() {
     getMenu();
@@ -62,9 +55,16 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
     super.initState();
   }
 
+  getListHutang() async {
+    final session = Provider.of<EvaluasiHutangServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    await session.getListHutang(ktp!);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiHutangModel>(context, listen: false);
+    final config = Provider.of<EvaluasiHutangServices>(context, listen: false);
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
@@ -154,7 +154,7 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiHutangModel>(
+            Consumer<EvaluasiHutangServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.datahutang.length; i++) ...[
@@ -234,7 +234,7 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
                             if (value.datahutang[i]["status"] == "0") ...[
                               ElevatedButton(
                                 onPressed: () async {
-                                  config
+                                  await config
                                       .cariIDTransaksi(
                                           value.datahutang[i]["id_permohonan"])
                                       .then((value) async {
@@ -242,9 +242,11 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
                                         await SharedPreferences.getInstance();
                                     await prefs.setString(
                                         "id_transaksi", value.toString());
+                                    print(value.toString());
                                   });
-                                  Navigator.of(context).pushReplacementNamed(
-                                      EvaluasiCicilan.nameRoute);
+
+                                  Navigator.of(context)
+                                      .pushNamed(EvaluasiCicilan.nameRoute);
                                 },
                                 child: Text(
                                   "Bayar",

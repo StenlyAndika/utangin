@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../models/evaluasi_pinjaman_model.dart';
+import '../../../services/evaluasi_pinjaman_services.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
 import '../menu_login.dart';
@@ -19,10 +19,10 @@ class TawarkanPinjaman extends StatefulWidget {
 }
 
 class _TawarkanPinjamanState extends State<TawarkanPinjaman> {
-  late TextEditingController emailpeminjam;
-  late TextEditingController jumlah;
-  late TextEditingController tglpengembalian;
-  late TextEditingController denda;
+  late TextEditingController emailpeminjam = TextEditingController();
+  late TextEditingController jumlah = TextEditingController();
+  late TextEditingController tglpengembalian = TextEditingController();
+  late TextEditingController denda = TextEditingController();
 
   late String ktppeminjam;
   late bool _emailvalid;
@@ -61,10 +61,10 @@ class _TawarkanPinjamanState extends State<TawarkanPinjaman> {
   @override
   void initState() {
     getMenu();
-    emailpeminjam = TextEditingController();
-    jumlah = TextEditingController();
-    tglpengembalian = TextEditingController();
-    denda = TextEditingController();
+    emailpeminjam.text = "";
+    jumlah.text = "";
+    tglpengembalian.text = "";
+    denda.text = "";
     _emailvalid = false;
     _emailfound = true;
     formattedDate = "";
@@ -73,7 +73,7 @@ class _TawarkanPinjamanState extends State<TawarkanPinjaman> {
 
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiPinjamanModel>(context, listen: false);
+    final config = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Container(

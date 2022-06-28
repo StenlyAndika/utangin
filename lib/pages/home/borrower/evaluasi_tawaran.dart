@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../pages/home/borrower/menu_borrower.dart';
 import '../../../pages/home/borrower/tawaran_pinjaman.dart';
-import '../../../models/evaluasi_tawaran_model.dart';
+import '../../../services/evaluasi_tawaran_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../lender/menu_lender.dart';
@@ -48,18 +48,18 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
     }
   }
 
-  getListTawaran() async {
-    final session = Provider.of<EvaluasiTawaranModel>(context, listen: false);
-    final prefs = await SharedPreferences.getInstance();
-    String? ktp = await prefs.getString("ktp");
-    session.getListTawaran(ktp!);
-  }
-
   @override
   void initState() {
     getMenu();
     getListTawaran();
     super.initState();
+  }
+
+  getListTawaran() async {
+    final session = Provider.of<EvaluasiTawaranServices>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    String? ktp = await prefs.getString("ktp");
+    await session.getListTawaran(ktp!);
   }
 
   @override
@@ -154,7 +154,7 @@ class _EvaluasiTawaranState extends State<EvaluasiTawaran> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiTawaranModel>(
+            Consumer<EvaluasiTawaranServices>(
               builder: (context, value, child) => Column(
                 children: [
                   for (var i = 0; i < value.datatawaran.length; i++) ...[

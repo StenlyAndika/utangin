@@ -11,7 +11,7 @@ import '../pages/home/lender/sukses_pelunasan_lender.dart';
 
 import '../template/reusablewidgets.dart';
 
-class EvaluasiHutangModel with ChangeNotifier {
+class EvaluasiHutangServices with ChangeNotifier {
   List<dynamic> _datahutang = [];
   List<dynamic> get datahutang => _datahutang;
 
@@ -24,7 +24,7 @@ class EvaluasiHutangModel with ChangeNotifier {
   Map<String, dynamic> _detailcicilan = {};
   Map<String, dynamic> get detailcicilan => _detailcicilan;
 
-  var url = "http://10.0.2.2/Utangin_API";
+  var url = "http://apiutangin.hendrikofirman.com";
   var endpoint_list_hutang = "User/Permohonan/Permohonan_dari_saya";
   var endpoint_cari_id = "User/Cicilan/cariIdTransaksi";
   var endpoint_list_cicilan = "User/Cicilan/Daftar_cicilan";
@@ -34,57 +34,75 @@ class EvaluasiHutangModel with ChangeNotifier {
   var endpoint_konfirmasi_cicilan = "User/Cicilan/Konfirmasi_cicilan";
 
   getListHutang(String nikborrower) async {
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_list_hutang/$nikborrower"));
-    _datahutang = await json.decode(hasilResponse.body);
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _datahutang = [];
+    } else {
+      notifyListeners();
+      _datahutang = await json.decode(response.body);
+    }
   }
 
   Future cariIDTransaksi(String id_permohonan) async {
     String id;
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_cari_id/$id_permohonan"));
-    id = await json.decode(hasilResponse.body)[0]["id_transaksi"];
+    id = await json.decode(response.body)[0]["id_transaksi"];
     notifyListeners();
     return id;
   }
 
   getListCicilan(String id_transaksi) async {
-    var hasilResponse = await http.post(
+    var response = await http.post(
       Uri.parse("$url/$endpoint_list_cicilan"),
       body: {
         "id_transaksi": id_transaksi,
       },
     );
-    _listcicilan = await json.decode(hasilResponse.body);
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _listcicilan = [];
+    } else {
+      notifyListeners();
+      _listcicilan = await json.decode(response.body);
+    }
   }
 
   getDetailCicilan(String id_cicilan) async {
-    var hasilResponse =
+    var response =
         await http.get(Uri.parse("$url/$endpoint_detail_cicilan/$id_cicilan"));
-    _detailcicilan = await json.decode(hasilResponse.body)[0];
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _detailcicilan = {};
+    } else {
+      notifyListeners();
+      _detailcicilan = await json.decode(response.body)[0];
+    }
   }
 
   getDetailCicilanLender(String id_cicilan) async {
-    var hasilResponse = await http
+    var response = await http
         .get(Uri.parse("$url/$endpoint_detail_cicilan_lender/$id_cicilan"));
-    _detailcicilan = await json.decode(hasilResponse.body)[0];
-    notifyListeners();
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _detailcicilan = {};
+    } else {
+      notifyListeners();
+      _detailcicilan = await json.decode(response.body)[0];
+    }
   }
 
   konfirmasiCicilan(String id_cicilan, context) async {
-    var hasilResponse = await http
+    var response = await http
         .get(Uri.parse("$url/$endpoint_konfirmasi_cicilan/$id_cicilan"));
-    if (hasilResponse.statusCode == 200) {
+    if (response.statusCode == 200) {
       Navigator.of(context)
           .pushReplacementNamed(NotifSuksesPelunasanLender.nameRoute);
     } else {
-      ReusableWidgets.alertNotification(
-          context,
-          "Terjadi Kesalahan. Status : ${hasilResponse.statusCode}",
-          Icons.error);
+      ReusableWidgets.alertNotification(context,
+          "Terjadi Kesalahan. Status : ${response.statusCode}", Icons.error);
     }
     notifyListeners();
   }
