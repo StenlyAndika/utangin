@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth.dart';
@@ -13,11 +14,27 @@ class ReusableWidgets {
   }
 
   static Future<dynamic> openCamera(int stat) async {
+    var status = await Permission.manageExternalStorage.status;
+    if (!status.isGranted) {
+      await Permission.manageExternalStorage.request();
+    }
+    var status2 = await Permission.storage.status;
+    if (!status2.isGranted) {
+      await Permission.storage.request();
+    }
     return await ImagePicker()
         .pickImage(source: ImageSource.camera, imageQuality: 25);
   }
 
   static Future<dynamic> openGallery(int stat) async {
+    var status = await Permission.manageExternalStorage.status;
+    if (!status.isGranted) {
+      await Permission.manageExternalStorage.request();
+    }
+    var status2 = await Permission.storage.status;
+    if (!status2.isGranted) {
+      await Permission.storage.request();
+    }
     return await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 25);
   }

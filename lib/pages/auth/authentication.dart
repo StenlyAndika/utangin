@@ -101,7 +101,87 @@ class _AuthPageState extends State<AuthPage> {
               ),
             ),
             SizedBox(height: 10),
-            ReusableWidgets.inputField("No HP", nohp, TextInputType.phone),
+            Container(
+              padding: EdgeInsets.only(left: 5),
+              decoration: BoxDecoration(
+                border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: nohp,
+                onChanged: (nohp) {
+                  setState(() {
+                    daftar.checkNoHP(nohp);
+                  });
+                },
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+                cursorColor: Colors.black,
+                autocorrect: false,
+                keyboardType: TextInputType.number,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(5),
+                  border: InputBorder.none,
+                  labelText: "Nomor HP",
+                  labelStyle:
+                      TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                children: [
+                  if (nohp.text != "") ...[
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Consumer<AuthServices>(
+                          builder: (context, value, child) => AnimatedContainer(
+                            duration: Duration(milliseconds: 500),
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                color: (value.nomorterdaftar == "true")
+                                    ? Colors.red
+                                    : Colors.green,
+                                border: (value.nomorterdaftar == "true")
+                                    ? Border.all(color: Colors.transparent)
+                                    : Border.all(color: Colors.grey.shade400),
+                                borderRadius: BorderRadius.circular(50)),
+                            child: Center(
+                              child: (value.nomorterdaftar == "true")
+                                  ? Icon(
+                                      Icons.close_rounded,
+                                      color: Colors.white,
+                                      size: 10,
+                                    )
+                                  : Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 10,
+                                    ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Consumer<AuthServices>(
+                          builder: (context, value, child) => Text(
+                            (value.nomorterdaftar == "true")
+                                ? "Nomor HP sudah terdaftar"
+                                : "Nomor HP siap digunakan",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
             SizedBox(height: 5),
             Container(
               padding: EdgeInsets.only(left: 5),
@@ -288,7 +368,8 @@ class _AuthPageState extends State<AuthPage> {
             Consumer<AuthServices>(
               builder: (context, value, child) => Visibility(
                 visible: (_emailvalid)
-                    ? (value.emailterdaftar == "true")
+                    ? (value.emailterdaftar == "true" ||
+                            value.nomorterdaftar == "true")
                         ? false
                         : true
                     : false,

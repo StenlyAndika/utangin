@@ -57,8 +57,6 @@ class _FormDaftarState extends State<FormDaftar> {
                           if (stat == 1) {
                             _fotoktp = File(pickedImage!.path);
                           } else if (stat == 2) {
-                            _fotoselfie = File(pickedImage!.path);
-                          } else if (stat == 3) {
                             _tandatangan = File(pickedImage!.path);
                           }
                         });
@@ -66,7 +64,7 @@ class _FormDaftarState extends State<FormDaftar> {
                     });
                   },
                   label: Text(
-                    "Gallery",
+                    "Galeri",
                     style: TextStyle(fontSize: 15),
                   ),
                   style: ElevatedButton.styleFrom(

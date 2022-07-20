@@ -25,8 +25,8 @@ import '../pages/home/lender/sukses_revisi.dart';
 import '../pages/home/lender/tawarkan_pinjaman.dart';
 import '../pages/home/lender/detail_permohonan.dart';
 import '../pages/home/lender/sukses_konfirmasi.dart';
-import 'pages/home/lender/upload_bukti_peminjaman.dart';
-import 'services/evaluasi_pinjaman_services.dart';
+import '../pages/home/lender/upload_bukti_peminjaman.dart';
+import '../services/evaluasi_pinjaman_services.dart';
 import '../pages/home/lender/evaluasi_pinjaman.dart';
 import '../pages/home/lender/menu_lender.dart';
 import '../services/auth.dart';
@@ -40,9 +40,9 @@ import '../pages/landing.dart';
 import '../pages/home/borrower/sukses_pengajuan.dart';
 import '../pages/auth/form_login.dart';
 import '../services/pengajuan.dart';
-import 'services/evaluasi_tawaran_services.dart';
+import '../services/evaluasi_tawaran_services.dart';
 import '../services/user.dart';
-import 'services/evaluasi_hutang_services.dart';
+import '../services/evaluasi_hutang_services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -109,20 +109,21 @@ class MyApp extends StatelessWidget {
               color: Color.fromARGB(250, 250, 250, 250),
             ),
           ),
-          home: FutureBuilder<bool>(
-            future: getsession(),
-            builder: (BuildContext context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else {
-                if (snapshot.data == true) {
-                  return MenuLogin();
-                } else {
-                  return MyHomePage();
-                }
-              }
-            },
-          ),
+          // home: FutureBuilder<bool>(
+          //   future: getsession(),
+          //   builder: (BuildContext context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return Center(child: CircularProgressIndicator());
+          //     } else {
+          //       if (snapshot.data == true) {
+          //         return MenuLogin();
+          //       } else {
+          //         return MyHomePage();
+          //       }
+          //     }
+          //   },
+          // ),
+          initialRoute: NotifPeminjamanTerdokumentasi.nameRoute,
           routes: {
             // Landing
             MyHomePage.nameRoute: (context) => MyHomePage(),

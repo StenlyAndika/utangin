@@ -20,6 +20,9 @@ class AuthServices with ChangeNotifier {
   String _emailterdaftar = "";
   String get emailterdaftar => _emailterdaftar;
 
+  String _nomorterdaftar = "";
+  String get nomorterdaftar => _nomorterdaftar;
+
   String _ktpterdaftar = "";
   String get ktpterdaftar => _ktpterdaftar;
 
@@ -28,6 +31,7 @@ class AuthServices with ChangeNotifier {
 
   var url = "http://apiutangin.hendrikofirman.com";
   var endpoint_cek_email = "No_login/Cek_email";
+  var endpoint_cek_no_hp = "No_login/Cek_no_hp";
   var endpoint_send_otp = "No_login/Kirim_otp";
   var endpoint_cek_ktp = "No_login/Cek_ktp";
   var endpoint_signup = "No_login/Sign_up";
@@ -44,6 +48,18 @@ class AuthServices with ChangeNotifier {
     } else {
       notifyListeners();
       _emailterdaftar = await json.decode(response.body)["status"];
+    }
+  }
+
+  checkNoHP(String nohp) async {
+    var response =
+        await http.get(Uri.parse("$url/$endpoint_cek_no_hp?no_hp=$nohp"));
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _nomorterdaftar = "";
+    } else {
+      notifyListeners();
+      _nomorterdaftar = await json.decode(response.body)["status"];
     }
   }
 

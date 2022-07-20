@@ -43,6 +43,9 @@ dependencies:
   carousel_slider: ^4.1.1
   dropdown_search: ^5.0.2
 
+  open_file: ^3.2.1
+  permission_handler: ^10.0.0
+
 # flutter pub run flutter_native_splash:create
 flutter_native_splash:
   color: "#ffffff"

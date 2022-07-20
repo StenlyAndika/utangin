@@ -77,7 +77,8 @@ class _DetailPermohonanState extends State<DetailPermohonan> {
   }
 
   getDetailPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
+    final session =
+        Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? idp = await prefs.getString("idp");
     await session.getDetailPinjaman(idp!);
@@ -85,13 +86,13 @@ class _DetailPermohonanState extends State<DetailPermohonan> {
 
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
+    final config =
+        Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Consumer<EvaluasiPinjamanServices>(
         builder: (context, value, child) => Container(
-          padding:
-              EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           alignment: Alignment.center,
           child: ListView(
             children: [
@@ -145,8 +146,7 @@ class _DetailPermohonanState extends State<DetailPermohonan> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -165,8 +165,8 @@ class _DetailPermohonanState extends State<DetailPermohonan> {
                     border: InputBorder.none,
                     labelText: "Jumlah Pinjaman",
                     prefixText: "Rp.",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),
@@ -197,8 +197,7 @@ class _DetailPermohonanState extends State<DetailPermohonan> {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 184, 174, 174)),
+                  border: Border.all(color: Color.fromARGB(255, 184, 174, 174)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -225,8 +224,8 @@ class _DetailPermohonanState extends State<DetailPermohonan> {
                         (value.detailpinjaman["denda"].toString() != "0")
                             ? "% per hari"
                             : "",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 110, 108, 108)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(255, 110, 108, 108)),
                   ),
                 ),
               ),

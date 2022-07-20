@@ -98,7 +98,8 @@ class _UploadBuktiPeminjamanState extends State<UploadBuktiPeminjaman> {
 
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
+    final config =
+        Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(
