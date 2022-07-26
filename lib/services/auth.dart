@@ -111,6 +111,8 @@ class AuthServices with ChangeNotifier {
     nohp,
     context,
   ) async {
+    ProgressDialog pd = ProgressDialog(context: context);
+    pd.show(max: -1, msg: "Mohon tunggu...");
     try {
       var request =
           http.MultipartRequest("POST", Uri.parse("$url/$endpoint_signup"));
@@ -158,23 +160,28 @@ class AuthServices with ChangeNotifier {
       var msg = json.decode(respStr);
 
       if (response.statusCode == 200) {
+        pd.close();
         notifyListeners();
         Navigator.of(context).pushReplacementNamed(NotifSuksesDaftar.nameRoute);
       } else {
+        pd.close();
         ReusableWidgets.alertNotification(
             context,
             "Terjadi Kesalahan. Status : ${response.statusCode} $msg",
             Icons.error);
       }
     } on SocketException {
+      pd.close();
       ReusableWidgets.alertNotification(
           context, "Tidak ada koneksi internet.", Icons.error);
     } on TimeoutException {
+      pd.close();
       ReusableWidgets.alertNotification(
           context,
           "Koneksi waktu habis. Pastikan perangkat anda terhubung ke internet.",
           Icons.error);
     } on Exception catch (e) {
+      pd.close();
       ReusableWidgets.alertNotification(
           context, "Terjadi Kesalahan $e", Icons.error);
     }

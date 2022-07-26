@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/evaluasi_pinjaman_services.dart';
 import '../../../pages/home/lender/detail_permohonan.dart';
@@ -49,6 +54,40 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
     }
   }
 
+  Future openFile({required String url, String? fileName}) async {
+    var status = await Permission.manageExternalStorage.status;
+    if (!status.isGranted) {
+      await Permission.manageExternalStorage.request();
+    }
+    var status2 = await Permission.storage.status;
+    if (!status2.isGranted) {
+      await Permission.storage.request();
+    }
+    final file = await downloadFile(url, fileName!);
+    if (file == null) return;
+    print('Path: ${file.path}');
+    return file.path;
+  }
+
+  Future<File?> downloadFile(String url, String name) async {
+    final appStorage = Directory('/storage/emulated/0/Download');
+
+    final file = File('${appStorage.path}/$name');
+
+    try {
+      final response2 = await http.get(Uri.parse(url));
+
+      final raf = file.openSync(mode: FileMode.write);
+      raf.writeFromSync(response2.bodyBytes);
+      await raf.close();
+
+      return file;
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   @override
   void initState() {
     getMenu();
@@ -57,7 +96,8 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
   }
 
   getListPinjaman() async {
-    final session = Provider.of<EvaluasiPinjamanServices>(context, listen: false);
+    final session =
+        Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? ktp = await prefs.getString("ktp");
     await session.getListPinjaman(ktp!);
@@ -74,8 +114,7 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
           automaticallyImplyLeading: false,
           elevation: 0,
           flexibleSpace: Container(
-            padding:
-                EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
+            padding: EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 0),
             alignment: Alignment.center,
             child: ListView(
               children: [
@@ -245,18 +284,92 @@ class _EvaluasiPinjamanState extends State<EvaluasiPinjaman> {
                                     DetailPermohonan.nameRoute);
                               }
                             } else {
-                              null;
+                              var kdt = value.datapinjaman[i]["id_transaksi"];
+                              openFile(
+                                      url:
+                                          'https://apiutangin.hendrikofirman.com/User/Transaksi/Cetak_Laporan/$kdt',
+                                      fileName: '$kdt.pdf')
+                                  .then(
+                                (value) => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AnimatedContainer(
+                                    duration: Duration(milliseconds: 1500),
+                                    child: AlertDialog(
+                                      elevation: 0,
+                                      backgroundColor:
+                                          Colors.white.withOpacity(0.9),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0),
+                                        ),
+                                      ),
+                                      title: Icon(
+                                        Icons.celebration,
+                                        size: 40,
+                                        color: Colors.red,
+                                      ),
+                                      content: Text(
+                                        "Laporan tersimpan di folder Download.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red),
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            OpenFile.open(value);
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Buka File',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Tutup',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
                             }
                           },
                           child: Container(
                             padding: EdgeInsets.only(right: 20),
                             width: width * 0.45,
                             height: 40,
-                            alignment: Alignment.topRight,
+                            alignment: Alignment.center,
                             child: Text(
-                              "Lihat Detail",
+                              (value.datapinjaman[i]["acc_l"] == "1")
+                                  ? "Download Laporan"
+                                  : "Lihat Detail",
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.blue,
                               ),
                             ),

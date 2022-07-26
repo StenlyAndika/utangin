@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/home/borrower/evaluasi_cicilan.dart';
+import '../../../pages/home/borrower/evaluasi_cicilan.dart';
 import '../../../services/evaluasi_hutang_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
@@ -46,6 +51,40 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
         ReusableWidgets.menuPengaturan(context);
         break;
     }
+  }
+
+  Future openFile({required String url, String? fileName}) async {
+    var status = await Permission.manageExternalStorage.status;
+    if (!status.isGranted) {
+      await Permission.manageExternalStorage.request();
+    }
+    var status2 = await Permission.storage.status;
+    if (!status2.isGranted) {
+      await Permission.storage.request();
+    }
+    final file = await downloadFile(url, fileName!);
+    if (file == null) return;
+    print('Path: ${file.path}');
+    return file.path;
+  }
+
+  Future<File?> downloadFile(String url, String name) async {
+    final appStorage = Directory('/storage/emulated/0/Download');
+
+    final file = File('${appStorage.path}/$name');
+
+    try {
+      final response2 = await http.get(Uri.parse(url));
+
+      final raf = file.openSync(mode: FileMode.write);
+      raf.writeFromSync(response2.bodyBytes);
+      await raf.close();
+
+      return file;
+    } catch (e) {
+      print(e);
+    }
+    return null;
   }
 
   @override
@@ -225,62 +264,147 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
                           ]
                         ],
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        alignment: Alignment.centerRight,
-                        child: Wrap(
-                          children: [
-                            SizedBox(width: 10),
-                            if (value.datahutang[i]["status"] == "0") ...[
-                              ElevatedButton(
-                                onPressed: () async {
-                                  await config
-                                      .cariIDTransaksi(
-                                          value.datahutang[i]["id_permohonan"])
-                                      .then((value) async {
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
-                                    await prefs.setString(
-                                        "id_transaksi", value.toString());
-                                    print(value.toString());
-                                  });
+                      Wrap(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              var kdt = value.datahutang[i]["id_transaksi"];
+                              openFile(
+                                      url:
+                                          'https://apiutangin.hendrikofirman.com/User/Transaksi/Cetak_Laporan/$kdt',
+                                      fileName: '$kdt.pdf')
+                                  .then(
+                                (value) => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AnimatedContainer(
+                                    duration: Duration(milliseconds: 1500),
+                                    child: AlertDialog(
+                                      elevation: 0,
+                                      backgroundColor:
+                                          Colors.white.withOpacity(0.9),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0),
+                                        ),
+                                      ),
+                                      title: Icon(
+                                        Icons.celebration,
+                                        size: 40,
+                                        color: Colors.red,
+                                      ),
+                                      content: Text(
+                                        "Laporan tersimpan di folder Download.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red),
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            OpenFile.open(value);
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Buka File',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Tutup',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(right: 20),
+                              width: width * 0.45,
+                              height: 40,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Download Laporan",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          if (value.datahutang[i]["status"] == "0") ...[
+                            ElevatedButton(
+                              onPressed: () async {
+                                await config
+                                    .cariIDTransaksi(
+                                        value.datahutang[i]["id_permohonan"])
+                                    .then((value) async {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.setString(
+                                      "id_transaksi", value.toString());
+                                  print(value.toString());
+                                });
 
-                                  Navigator.of(context)
-                                      .pushNamed(EvaluasiCicilan.nameRoute);
-                                },
-                                child: Text(
-                                  "Bayar",
-                                  style: TextStyle(
-                                      fontSize: 11, color: Colors.white),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.cyan,
-                                  fixedSize: Size(150, 10),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
+                                Navigator.of(context)
+                                    .pushNamed(EvaluasiCicilan.nameRoute);
+                              },
+                              child: Text(
+                                "Bayar",
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.cyan,
+                                fixedSize: Size(150, 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                            ] else if (value.datahutang[i]["status"] ==
-                                "1") ...[
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Lunas",
-                                  style: TextStyle(
-                                      fontSize: 11, color: Colors.white),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.green,
-                                  fixedSize: Size(150, 10),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
+                            ),
+                          ] else if (value.datahutang[i]["status"] == "1") ...[
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "Lunas",
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.green,
+                                fixedSize: Size(150, 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                            ]
+                            ),
                           ],
-                        ),
+                        ],
                       ),
                       Divider(),
                     ]

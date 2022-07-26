@@ -21,12 +21,13 @@ class UserServices with ChangeNotifier {
   getListRekening(String ktp) async {
     var response =
         await http.get(Uri.parse("$url/$endpoint_cari_rekening/$ktp"));
+    print(json.decode(response.body));
     if (json.decode(response.body).isEmpty) {
       notifyListeners();
       return _datarekening = [];
     } else {
       notifyListeners();
-      _datarekening = await json.decode(response.body)[0];
+      _datarekening = await json.decode(response.body);
     }
   }
 

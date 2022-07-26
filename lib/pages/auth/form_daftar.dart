@@ -512,7 +512,12 @@ class _FormDaftarState extends State<FormDaftar> {
                     showSelectedItems: true,
                   ),
                   items: [
-                    "SMA Sederajat",
+                    "SD",
+                    "SMP",
+                    "SMA",
+                    "Diploma 1 (D1)",
+                    "Diploma 2 (D2)",
+                    "Diploma 3 (D3)",
                     "Strata 1 (S1)",
                     "Strata 2 (S2)",
                     "Strata 3 (S3)"

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:utangin/template/reusablewidgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../pages/home/lender/evaluasi_pinjaman.dart';
 
 class NotifPeminjamanTerdokumentasi extends StatelessWidget {
@@ -141,75 +141,76 @@ class NotifPeminjamanTerdokumentasi extends StatelessWidget {
                     height: 20,
                   ),
                   ElevatedButton(
-                    onPressed: () => openFile(
-                            url:
-                                'https://apiutangin.hendrikofirman.com/User/Transaksi/Cetak_Laporan/4wm0FQ9GwB',
-                            fileName: 'test.pdf')
-                        .then((value) => showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  AnimatedContainer(
-                                duration: Duration(milliseconds: 1500),
-                                child: AlertDialog(
-                                  elevation: 0,
-                                  backgroundColor:
-                                      Colors.white.withOpacity(0.9),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20.0),
-                                    ),
-                                  ),
-                                  title: Icon(
-                                    Icons.celebration,
-                                    size: 40,
-                                    color: Colors.red,
-                                  ),
-                                  content: Text(
-                                    "Laporan tersimpan di folder Download.",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red),
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        OpenFile.open(value);
-                                        Navigator.of(context).pop();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Buka File',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Tutup',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      var kdt = prefs.getString('kdt');
+                      openFile(
+                              url:
+                                  'https://apiutangin.hendrikofirman.com/User/Transaksi/Cetak_Laporan/$kdt',
+                              fileName: '$kdt.pdf')
+                          .then(
+                        (value) => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AnimatedContainer(
+                            duration: Duration(milliseconds: 1500),
+                            child: AlertDialog(
+                              elevation: 0,
+                              backgroundColor: Colors.white.withOpacity(0.9),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20.0),
                                 ),
                               ),
-                            )),
+                              title: Icon(
+                                Icons.celebration,
+                                size: 40,
+                                color: Colors.red,
+                              ),
+                              content: Text(
+                                "Laporan tersimpan di folder Download.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    OpenFile.open(value);
+                                    Navigator.of(context).pop();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Buka File',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Tutup',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: Color.fromARGB(255, 112, 110, 110),
                       minimumSize: Size.fromHeight(50),

@@ -109,21 +109,21 @@ class MyApp extends StatelessWidget {
               color: Color.fromARGB(250, 250, 250, 250),
             ),
           ),
-          // home: FutureBuilder<bool>(
-          //   future: getsession(),
-          //   builder: (BuildContext context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return Center(child: CircularProgressIndicator());
-          //     } else {
-          //       if (snapshot.data == true) {
-          //         return MenuLogin();
-          //       } else {
-          //         return MyHomePage();
-          //       }
-          //     }
-          //   },
-          // ),
-          initialRoute: NotifPeminjamanTerdokumentasi.nameRoute,
+          home: FutureBuilder<bool>(
+            future: getsession(),
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                if (snapshot.data == true) {
+                  return MenuLogin();
+                } else {
+                  return MyHomePage();
+                }
+              }
+            },
+          ),
+          // initialRoute: NotifPeminjamanTerdokumentasi.nameRoute,
           routes: {
             // Landing
             MyHomePage.nameRoute: (context) => MyHomePage(),

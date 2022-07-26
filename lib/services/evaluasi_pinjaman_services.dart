@@ -204,6 +204,13 @@ class EvaluasiPinjamanServices with ChangeNotifier {
       final respStr = await response.stream.bytesToString();
       var msg = json.decode(respStr);
 
+      // print(response);
+      print(respStr);
+      print(msg);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('kdt', json.decode(respStr)["id_transaksi"]);
+
       if (response.statusCode == 200) {
         pd.close();
         notifyListeners();
