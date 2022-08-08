@@ -4,8 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../pages/home/borrower/form_pengajuan_tawaran.dart';
 import '../../../services/evaluasi_tawaran_services.dart';
 import '../../../template/reusablewidgets.dart';
-import '../lender/menu_lender.dart';
 import '../menu_login.dart';
+import 'borrower_riwayat.dart';
 import 'menu_borrower.dart';
 
 class TawaranPinjaman extends StatefulWidget {
@@ -25,30 +25,20 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
 
   late String formattedDate;
 
-  String? menu;
   int selected = 1;
-
-  getMenu() async {
-    final prefs = await SharedPreferences.getInstance();
-    menu = await prefs.getString("menu");
-  }
 
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
-        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        selected = 1;
-        if (menu == "lender") {
-          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
-        } else {
-          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
-        }
+        Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
+        break;
+      case 2:
+        Navigator.of(context).pushReplacementNamed(RiwayatBorrower.nameRoute);
         break;
       case 3:
-        selected = 3;
         ReusableWidgets.menuPengaturan(context);
         break;
     }
@@ -56,7 +46,6 @@ class _TawaranPinjamanState extends State<TawaranPinjaman> {
 
   @override
   void initState() {
-    getMenu();
     getDetailTawaran();
     emaillender.text = "";
     jumlah.text = "";

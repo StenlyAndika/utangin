@@ -7,24 +7,23 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../pages/home/borrower/evaluasi_cicilan.dart';
-import '../../../services/evaluasi_hutang_services.dart';
+import '../../../services/evaluasi_pinjaman_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
 import '../borrower/menu_borrower.dart';
-import 'borrower_riwayat.dart';
+import 'menu_borrower.dart';
 
-class EvaluasiHutang extends StatefulWidget {
-  EvaluasiHutang({Key? key}) : super(key: key);
+class RiwayatBorrower extends StatefulWidget {
+  RiwayatBorrower({Key? key}) : super(key: key);
 
-  static const nameRoute = '/pageEvaluasiHutang';
+  static const nameRoute = '/pageRiwayatBorrower';
 
   @override
-  State<EvaluasiHutang> createState() => _EvaluasiHutangState();
+  State<RiwayatBorrower> createState() => _RiwayatBorrowerState();
 }
 
-class _EvaluasiHutangState extends State<EvaluasiHutang> {
-  int selected = 1;
+class _RiwayatBorrowerState extends State<RiwayatBorrower> {
+  int selected = 2;
 
   void _onItemTapped(int index) {
     switch (index) {
@@ -79,20 +78,20 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
 
   @override
   void initState() {
-    getListHutang();
+    getRiwayatPinjaman();
     super.initState();
   }
 
-  getListHutang() async {
-    final session = Provider.of<EvaluasiHutangServices>(context, listen: false);
+  getRiwayatPinjaman() async {
+    final session =
+        Provider.of<EvaluasiPinjamanServices>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     String? ktp = await prefs.getString("ktp");
-    await session.getListHutang(ktp!);
+    await session.getRiwayatPinjamanBorrower(ktp!);
   }
 
   @override
   Widget build(BuildContext context) {
-    final config = Provider.of<EvaluasiHutangServices>(context, listen: false);
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
@@ -128,7 +127,7 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Bayar Pinjaman",
+                  "Riwayat Pinjaman",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.black,
@@ -150,7 +149,7 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
                       Container(
                         width: width * 0.33,
                         child: Text(
-                          "Nama Lender",
+                          "Nama Peminjam",
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
@@ -182,82 +181,76 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
         alignment: Alignment.center,
         child: ListView(
           children: [
-            Consumer<EvaluasiHutangServices>(
+            Consumer<EvaluasiPinjamanServices>(
               builder: (context, value, child) => Column(
                 children: [
-                  for (var i = 0; i < value.datahutang.length; i++) ...[
-                    if (value.datahutang[i]["status"] != "X") ...[
-                      Wrap(
-                        children: [
+                  for (var i = 0; i < value.riwayatpinjaman.length; i++) ...[
+                    Wrap(
+                      children: [
+                        Container(
+                          width: width * 0.2,
+                          child: Text(
+                            DateFormat('dd-MM-yyyy').format(DateTime.parse(
+                                value.riwayatpinjaman[i]["tanggal"])),
+                            style: TextStyle(fontSize: 11),
+                          ),
+                        ),
+                        Container(
+                          width: width * 0.33,
+                          child: Text(
+                            value.riwayatpinjaman[i]["nama_lender"],
+                            style: TextStyle(fontSize: 11),
+                          ),
+                        ),
+                        Container(
+                          width: width * 0.22,
+                          child: Text(
+                            "Rp." + value.riwayatpinjaman[i]["jumlah"],
+                            style: TextStyle(fontSize: 11),
+                          ),
+                        ),
+                        if (value.riwayatpinjaman[i]["status"] == "1") ...[
                           Container(
                             width: width * 0.2,
+                            padding: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              DateFormat('dd-MM-yyyy').format(DateTime.parse(
-                                  value.datahutang[i]["tanggal_pengajuan"])),
-                              style: TextStyle(fontSize: 11),
+                              "Lunas",
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
+                        ] else if (value.riwayatpinjaman[i]["status"] ==
+                            "2") ...[
                           Container(
-                            width: width * 0.33,
+                            width: width * 0.2,
+                            padding: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              value.datahutang[i]["nama_lender"],
-                              style: TextStyle(fontSize: 11),
+                              "Ditolak",
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Color.fromARGB(255, 94, 89, 89),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                          Container(
-                            width: width * 0.22,
-                            child: Text(
-                              "Rp." + value.datahutang[i]["jumlah"],
-                              style: TextStyle(fontSize: 11),
-                            ),
-                          ),
-                          if (value.datahutang[i]["status"] == "X") ...[
-                            Container(
-                              width: width * 0.2,
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                "Pengajuan",
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ] else if (value.datahutang[i]["status"] == "0") ...[
-                            Container(
-                              width: width * 0.2,
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                "Belum Lunas",
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ] else ...[
-                            Container(
-                              width: width * 0.2,
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                "Lunas",
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ]
-                        ],
-                      ),
-                      Wrap(
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              var kdt = value.datahutang[i]["id_transaksi"];
+                        ]
+                      ],
+                    ),
+                    Wrap(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            if (value.riwayatpinjaman[i]["status"] == "X") {
+                            } else if (value.riwayatpinjaman[i]["status"] ==
+                                "0") {
+                            } else if (value.riwayatpinjaman[i]["status"] ==
+                                "2") {
+                            } else {
+                              var kdt =
+                                  value.riwayatpinjaman[i]["id_transaksi"];
                               openFile(
                                       url:
                                           'https://apiutangin.hendrikofirman.com/User/Transaksi/Cetak_Laporan/$kdt',
@@ -329,75 +322,72 @@ class _EvaluasiHutangState extends State<EvaluasiHutang> {
                                   ),
                                 ),
                               );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(right: 20),
-                              width: width * 0.45,
-                              height: 40,
-                              alignment: Alignment.center,
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.only(right: 20),
+                            width: width * 0.45,
+                            height: 40,
+                            alignment: Alignment.center,
+                            child: Text(
+                              (value.riwayatpinjaman[i]["status"] == "1")
+                                  ? "Download Laporan"
+                                  : "",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        if (value.riwayatpinjaman[i]["status"] == "X")
+                          ...[]
+                        else if (value.riwayatpinjaman[i]["status"] == "1") ...[
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: width * 0.45,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: InkWell(
                               child: Text(
-                                "Download Laporan",
+                                "Pinjaman Lunas",
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                                    fontSize: 12, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ] else if (value.riwayatpinjaman[i]["status"] ==
+                            "2") ...[
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: width * 0.45,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: InkWell(
+                              child: Text(
+                                "Pinjaman Ditolak",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
-                          if (value.datahutang[i]["status"] == "0") ...[
-                            ElevatedButton(
-                              onPressed: () async {
-                                await config
-                                    .cariIDTransaksi(
-                                        value.datahutang[i]["id_permohonan"])
-                                    .then((value) async {
-                                  final prefs =
-                                      await SharedPreferences.getInstance();
-                                  await prefs.setString(
-                                      "id_transaksi", value.toString());
-                                  print(value.toString());
-                                });
-
-                                Navigator.of(context)
-                                    .pushNamed(EvaluasiCicilan.nameRoute);
-                              },
-                              child: Text(
-                                "Bayar",
-                                style: TextStyle(
-                                    fontSize: 11, color: Colors.white),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.cyan,
-                                fixedSize: Size(150, 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                            ),
-                          ] else if (value.datahutang[i]["status"] == "1") ...[
-                            ElevatedButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Lunas",
-                                style: TextStyle(
-                                    fontSize: 11, color: Colors.white),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.green,
-                                fixedSize: Size(150, 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      Divider(),
-                    ]
-                  ],
+                        ]
+                      ],
+                    ),
+                    Divider(),
+                  ]
                 ],
               ),
             ),

@@ -6,8 +6,8 @@ import '../../../pages/home/lender/detail_cicilan_lender.dart';
 import '../../../services/evaluasi_hutang_services.dart';
 import '../../../pages/home/menu_login.dart';
 import '../../../template/reusablewidgets.dart';
-import '../borrower/menu_borrower.dart';
 import '../lender/menu_lender.dart';
+import 'lender_riwayat.dart';
 
 class EvaluasiCicilanLender extends StatefulWidget {
   EvaluasiCicilanLender({Key? key}) : super(key: key);
@@ -19,30 +19,20 @@ class EvaluasiCicilanLender extends StatefulWidget {
 }
 
 class _EvaluasiCicilanLenderState extends State<EvaluasiCicilanLender> {
-  String? menu;
   int selected = 1;
-
-  getMenu() async {
-    final prefs = await SharedPreferences.getInstance();
-    menu = await prefs.getString("menu");
-  }
 
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
-        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
       case 1:
-        selected = 1;
-        if (menu == "lender") {
-          Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
-        } else {
-          Navigator.of(context).pushReplacementNamed(MenuBorrower.nameRoute);
-        }
+        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        break;
+      case 2:
+        Navigator.of(context).pushReplacementNamed(RiwayatLender.nameRoute);
         break;
       case 3:
-        selected = 3;
         ReusableWidgets.menuPengaturan(context);
         break;
     }
@@ -50,7 +40,6 @@ class _EvaluasiCicilanLenderState extends State<EvaluasiCicilanLender> {
 
   @override
   void initState() {
-    getMenu();
     getListCicilan();
     super.initState();
   }

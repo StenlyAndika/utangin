@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../pages/home/borrower/borrower_riwayat.dart';
+import '../pages/home/lender/lender_riwayat.dart';
 import '../pages/home/lender/sukses_pelunasan_lender.dart';
 import '../pages/home/lender/detail_cicilan_lender.dart';
 import '../pages/home/lender/evaluasi_cicilan_lender.dart';
@@ -152,6 +154,7 @@ class MyApp extends StatelessWidget {
             EvaluasiCicilan.nameRoute: (context) => EvaluasiCicilan(),
             DetailCicilan.nameRoute: (context) => DetailCicilan(),
             NotifSuksesPelunasan.nameRoute: (context) => NotifSuksesPelunasan(),
+            RiwayatBorrower.nameRoute: (context) => RiwayatBorrower(),
 
             // fitur lender
             MenuLender.nameRoute: (context) => MenuLender(),
@@ -173,6 +176,7 @@ class MyApp extends StatelessWidget {
             DetailCicilanLender.nameRoute: (context) => DetailCicilanLender(),
             NotifSuksesPelunasanLender.nameRoute: (context) =>
                 NotifSuksesPelunasanLender(),
+            RiwayatLender.nameRoute: (context) => RiwayatLender(),
           },
           onGenerateRoute: (settings) {
             if (settings.name == PassArgumentsScreen.routeName) {

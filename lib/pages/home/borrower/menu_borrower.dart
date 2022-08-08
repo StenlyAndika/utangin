@@ -14,6 +14,7 @@ import '../../../services/pengajuan.dart';
 import '../../../template/currencyformat.dart';
 import '../../../template/reusablewidgets.dart';
 import '../menu_login.dart';
+import 'borrower_riwayat.dart';
 
 class MenuBorrower extends StatefulWidget {
   MenuBorrower({Key? key}) : super(key: key);
@@ -38,6 +39,11 @@ class _MenuBorrowerState extends State<MenuBorrower> {
       case 0:
         selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
+        break;
+      case 2:
+        if (menu == "borrower") {
+          Navigator.of(context).pushReplacementNamed(RiwayatBorrower.nameRoute);
+        } else {}
         break;
       case 3:
         selected = 3;

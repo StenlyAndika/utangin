@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:utangin/pages/home/lender/evaluasi_pelunasan.dart';
+import '../../../pages/home/lender/evaluasi_pelunasan.dart';
+import '../../../pages/home/lender/lender_riwayat.dart';
 import '../../../template/currencyformat.dart';
 import '../../../template/reusablewidgets.dart';
 import '../../../pages/home/lender/evaluasi_pinjaman.dart';
@@ -24,22 +25,20 @@ class MenuLender extends StatefulWidget {
 }
 
 class _MenuLenderState extends State<MenuLender> {
-  String? menu;
   int selected = 1;
-
-  getMenu() async {
-    final prefs = await SharedPreferences.getInstance();
-    menu = await prefs.getString("menu");
-  }
 
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
-        selected = 0;
         Navigator.of(context).pushReplacementNamed(MenuLogin.nameRoute);
         break;
+      case 1:
+        Navigator.of(context).pushReplacementNamed(MenuLender.nameRoute);
+        break;
+      case 2:
+        Navigator.of(context).pushReplacementNamed(RiwayatLender.nameRoute);
+        break;
       case 3:
-        selected = 3;
         ReusableWidgets.menuPengaturan(context);
         break;
     }
@@ -68,7 +67,6 @@ class _MenuLenderState extends State<MenuLender> {
 
   @override
   void initState() {
-    getMenu();
     getUserData();
     super.initState();
   }

@@ -18,6 +18,9 @@ class EvaluasiPinjamanServices with ChangeNotifier {
   List<dynamic> _datapinjaman = [];
   List<dynamic> get datapinjaman => _datapinjaman;
 
+  List<dynamic> _riwayatpinjaman = [];
+  List<dynamic> get riwayatpinjaman => _riwayatpinjaman;
+
   Map<dynamic, dynamic> _databorrower = {};
   Map<dynamic, dynamic> get databorrower => _databorrower;
 
@@ -26,12 +29,40 @@ class EvaluasiPinjamanServices with ChangeNotifier {
 
   var url = "http://apiutangin.hendrikofirman.com";
   var endpoint_list_pinjaman = "User/Permohonan/Permohonan_kepada_saya";
+  var endpoint_riwayat_pinjaman = "User/Transaksi/Riwayat_dari_lender";
+  var endpoint_riwayat_pinjaman_borrower = "User/Transaksi/Riwayat_dari_borrower";
   var endpoint_detail_pinjaman = "User/Permohonan/Detail_permohonan";
   var endpoint_acc = "User/Permohonan/ACC_lender";
   var endpoint_konfirmasi = "User/Transaksi/Konfirmasi_pinjaman";
   var endpoint_revisi = "User/Permohonan/Kirim_revisi_permohonan";
   var endpoint_kirim_tawaran = "User/Penawaran/Kirim_tawaran";
   var endpoint_cari_borrower = "User/Data_user/Read_email";
+
+  getRiwayatPinjaman(String niklender) async {
+    var response =
+        await http.get(Uri.parse("$url/$endpoint_riwayat_pinjaman/$niklender"));
+    print(json.decode(response.body));
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _riwayatpinjaman = [];
+    } else {
+      notifyListeners();
+      _riwayatpinjaman = await json.decode(response.body);
+    }
+  }
+
+  getRiwayatPinjamanBorrower(String nikborrower) async {
+    var response =
+        await http.get(Uri.parse("$url/$endpoint_riwayat_pinjaman_borrower/$nikborrower"));
+    print(json.decode(response.body));
+    if (json.decode(response.body).isEmpty) {
+      notifyListeners();
+      return _riwayatpinjaman = [];
+    } else {
+      notifyListeners();
+      _riwayatpinjaman = await json.decode(response.body);
+    }
+  }
 
   getListPinjaman(String niklender) async {
     var response =
